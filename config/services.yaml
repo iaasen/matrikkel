@@ -13,7 +13,14 @@ services:
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
-    App\:
+#    App\:
+#        resource: '../src/'
+#        exclude:
+#            - '../src/DependencyInjection/'
+#            - '../src/Entity/'
+#            - '../src/Kernel.php'
+
+    Iaasen\MatrikkelApi\:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'

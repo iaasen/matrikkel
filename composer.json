@@ -26,12 +26,13 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "Iaasen\\MatrikkelApi\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "Iaasen\\MatrikkelApi\\Tests\\": "tests/"
         }
     },
     "replace": {

@@ -6,6 +6,8 @@
 
 namespace Iaasen\MatrikkelApi\Client;
 
+use Iaasen\Exception\NotAuthenticatedException;
+use Iaasen\Exception\NotFoundException;
 use Laminas\Soap\Client;
 
 class AbstractSoapClient extends Client {
@@ -13,6 +15,20 @@ class AbstractSoapClient extends Client {
 	public function __construct($wsdl = null, $options = null) {
 		parent::__construct($wsdl, $options);
 		$this->setSoapVersion(SOAP_1_1);
+	}
+
+
+	public function __call($name, $arguments) : mixed {
+		try {
+			return parent::__call($name, $arguments);
+		}
+		catch (\SoapFault $e) {
+			if($e->faultstring == 'Unauthorized') throw new NotAuthenticatedException('Unable to login. Check that login or password is incorrect');
+			match ($e->detail->ServiceException->enc_stype) {
+				'ObjectsNotFoundFaultInfo' => throw new NotFoundException(),
+				default => throw $e,
+			};
+		}
 	}
 
 

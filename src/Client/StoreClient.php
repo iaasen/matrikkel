@@ -6,8 +6,9 @@
 
 namespace Iaasen\MatrikkelApi\Client;
 
-use Iaasen\MatrikkelApi\Client\AbstractSoapClient;
-
+/**
+ * @method getObject(array $request)
+ */
 class StoreClient extends AbstractSoapClient {
 	const WSDL = [
 		'prod' => 'https://matrikkel.no/matrikkelapi/wsapi/v1/StoreServiceWS?WSDL',

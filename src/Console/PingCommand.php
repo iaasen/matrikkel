@@ -25,9 +25,10 @@ class PingCommand extends AbstractCommand {
 	public function execute(InputInterface $input, OutputInterface $output) : int {
 		$this->io->title('MatrikkelAPI ping');
 		try {
-			$this->kommuneService->getKommuneById(5006);
+			$this->kommuneService->getKommuneById(500611);
 		}
-		catch (\Exception) {
+		catch (\Exception $e) {
+			$this->io->error($e->getCode() . ' : ' . $e->getMessage());
 			$this->io->error('No success');
 			return Command::FAILURE;
 		}

@@ -27,5 +27,23 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+#    Iaasen\MatrikkelApi\Service\SoapClient:
+#        factory: [ 'Iaasen\MatrikkelApi\Service\SoapClientFactory', 'create' ]
+#        arguments: []
+
+    Iaasen\MatrikkelApi\Client\AdresseClient:
+        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\MatrikkelApi\Client\AdresseClient ]
+    Iaasen\MatrikkelApi\Client\KommuneClient:
+        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\MatrikkelApi\Client\KommuneClient ]
+    Iaasen\MatrikkelApi\Client\KodelisteClient:
+        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\MatrikkelApi\Client\KodelisteClient ]
+    Iaasen\MatrikkelApi\Client\StoreClient:
+        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\MatrikkelApi\Client\StoreClient ]
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

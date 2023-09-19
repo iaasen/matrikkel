@@ -11,19 +11,20 @@ namespace Iaasen\MatrikkelApi\Client;
  */
 class BubbleId {
 	public string $type;
-	public string $value;
+	public mixed $value;
 
 	const NAMESPACE_BASE = 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/';
 	const NAMESPACES = [
-		'KommuneId' => 'kommune',
-
+		'KommuneId' => self::NAMESPACE_BASE . 'kommune',
+		'KodelisteId' => self::NAMESPACE_BASE . 'kodeliste',
 	];
 
 
-	public static function getId(string $objectType, string $id) : \SoapVar {
+	public static function getId(string $id, string $objectType, ?string $namespace = null) : \SoapVar {
+		if(!$namespace) $namespace = self::NAMESPACES[$objectType];
 		$object = (new self())->setValue($id);
 		$object->setType($objectType);
-		return new \SoapVar($object, SOAP_ENC_OBJECT, $objectType, self::NAMESPACE_BASE . self::NAMESPACES[$objectType]);
+		return new \SoapVar($object, SOAP_ENC_OBJECT, $objectType, $namespace);
 	}
 
 

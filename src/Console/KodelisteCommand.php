@@ -6,6 +6,7 @@
 
 namespace Iaasen\MatrikkelApi\Console;
 
+use Iaasen\Debug\Timer;
 use Iaasen\MatrikkelApi\Service\KodelisteService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,18 +23,16 @@ class KodelisteCommand extends AbstractCommand {
 		parent::__construct();
 	}
 
+
 	public function execute(InputInterface $input, OutputInterface $output) : int {
 		$this->io->title('MatrikkelAPI Kodeliste');
+		Timer::setStart();
 
 		$id = $input->getArgument('id');
-		if($id) {
-			dump($this->kodelisteService->getKodeliste($id, true));
-		}
+		if($id) dump($this->kodelisteService->getKodeliste($id, true));
+		else dump($this->kodelisteService->getKodelister());
 
-		else {
-			dump($this->kodelisteService->getKodelister());
-		}
-
+		$this->io->writeln('<info>Execution time: ' . Timer::getElapsed() . '</info>');
 		return Command::SUCCESS;
 	}
 

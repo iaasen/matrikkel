@@ -20,11 +20,21 @@ class BubbleId {
 	];
 
 
-	public static function getId(string $id, string $objectType, ?string $namespace = null) : \SoapVar {
-		if(!$namespace) $namespace = self::NAMESPACES[$objectType];
+	public static function getId(string $id, string $objectType, ?string $objectNamespace = null) : \SoapVar {
+		if(!$objectNamespace) $objectNamespace = self::NAMESPACES[$objectType];
 		$object = (new self())->setValue($id);
 		$object->setType($objectType);
-		return new \SoapVar($object, SOAP_ENC_OBJECT, $objectType, $namespace);
+		return new \SoapVar($object, SOAP_ENC_OBJECT, $objectType, $objectNamespace);
+	}
+
+
+	public static function getIds(array $ids, string $objectType, ?string $objectNamespace = null) {
+		if(!$objectNamespace) $namespace = self::NAMESPACES[$objectType];
+		$idObjects = [];
+		foreach($ids AS $id) {
+			$idObjects[] = self::getId($id, $objectType, $objectNamespace);
+		}
+		return $idObjects;
 	}
 
 

@@ -8,6 +8,7 @@ namespace Iaasen\MatrikkelApi\Client;
 
 /**
  * @method getObject(array $request)
+ * @method getObjects(array $request)
  */
 class StoreClient extends AbstractSoapClient {
 	const WSDL = [

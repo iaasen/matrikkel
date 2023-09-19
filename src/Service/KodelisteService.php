@@ -37,13 +37,20 @@ class KodelisteService extends AbstractService {
 	public function getKodeliste(int $kodelisteId, bool $withCodes = false) : Kodeliste {
 		$result = $this->storeClient->getObject(['id' => BubbleId::getId($kodelisteId, 'KodelisteId')]);
 		$kodeliste = new Kodeliste($result->return);
+
 		if($withCodes) {
+			$codeIds = [];
+			foreach($result->return->koderIds->item AS $id) {
+				$codeIds[] = $id->value;
+			}
+			$idObjects = BubbleId::getIds($codeIds, $kodeliste->kodeIdType, $kodeliste->kodeIdNamespace);
 			$kodeliste->koderIds = [];
-			foreach($result->return->koderIds->item AS $kodeId) {
-				$kode = $this->getKode($kodeId->value, $kodeliste->kodeIdType, $kodeliste->kodeIdNamespace);
-				$kodeliste->addKode($kode);
+			$result = $this->storeClient->getObjects(['ids' => $idObjects]);
+			foreach($result->return->item AS $row) {
+				$kodeliste->addKode(new Kode($row));
 			}
 		}
+
 		return $kodeliste;
 	}
 

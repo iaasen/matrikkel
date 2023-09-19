@@ -9,6 +9,7 @@ namespace Iaasen\MatrikkelApi\Service;
 use Iaasen\MatrikkelApi\Client\BubbleId;
 use Iaasen\MatrikkelApi\Client\KommuneClient;
 use Iaasen\MatrikkelApi\Client\StoreClient;
+use Iaasen\MatrikkelApi\Entity\Kommune;
 
 class KommuneService extends AbstractService {
 
@@ -19,9 +20,10 @@ class KommuneService extends AbstractService {
 
 
 	public function getKommuneById(int $id) : object {
-		return $this->storeClient->getObject([
-			'id' => BubbleId::getId('KommuneId', $id),
+		$result = $this->storeClient->getObject([
+			'id' => BubbleId::getId($id, 'KommuneId'),
 		]);
+		return new Kommune($result->return);
 	}
 
 

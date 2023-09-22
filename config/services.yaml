@@ -43,6 +43,9 @@ services:
     Iaasen\MatrikkelApi\Client\StoreClient:
         factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
         arguments: [ Iaasen\MatrikkelApi\Client\StoreClient ]
+    Iaasen\MatrikkelApi\Client\MatrikkelsokClient:
+        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\MatrikkelApi\Client\MatrikkelsokClient ]
 
 
     # add more service definitions when explicit configuration is needed

@@ -17,6 +17,10 @@ class BubbleId {
 	const NAMESPACES = [
 		'KommuneId' => self::NAMESPACE_BASE . 'kommune',
 		'KodelisteId' => self::NAMESPACE_BASE . 'kodeliste',
+		'AdresseId' => self::NAMESPACE_BASE . 'adresse',
+		'VegId' => self::NAMESPACE_BASE . 'adresse',
+		'MatrikkelenhetId' => self::NAMESPACE_BASE . 'matrikkelenhet',
+
 	];
 
 

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'matrikkel:kodeliste', description: 'Addresses')]
+#[AsCommand(name: 'matrikkel:kodeliste', description: 'Option lists')]
 class KodelisteCommand extends AbstractCommand {
 
 	public function __construct(

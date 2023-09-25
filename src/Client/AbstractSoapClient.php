@@ -24,14 +24,15 @@ class AbstractSoapClient extends Client {
 			return parent::__call($name, $arguments);
 		}
 		catch (\SoapFault $e) {
-			if($e->faultcode == 'S:Client') throw new InvalidArgumentException($e->getMessage());
-			if($e->faultcode == 'HTTP') throw new NotAuthenticatedException('Unable to login. Check that login or password is incorrect');
-			if($e->faultcode == 'S:Server') {
-				match ($e->detail->ServiceException->enc_stype) {
-					'ObjectsNotFoundFaultInfo' => throw new NotFoundException($e->detail->ServiceException->enc_value->exceptionDetail->message),
-				};
-			}
-			throw $e;
+			throw new \SoapFault($e->getCode(), $e->getMessage());
+//			if($e->faultcode == 'S:Client') throw new InvalidArgumentException($e->getMessage());
+//			if($e->faultcode == 'HTTP') throw new NotAuthenticatedException('Unable to login. Check that login or password is incorrect');
+//			if($e->faultcode == 'S:Server') {
+//				if(isset($e->detail?->ServiceException?->enc_stype) && $e->detail?->ServiceException?->enc_stype == 'ObjectsNotFoundFaultInfo') {
+//					 throw new NotFoundException($e->detail->ServiceException->enc_value->exceptionDetail->message);
+//				}
+//			}
+//			throw new \Exception($e->getMessage(), $e->getCode());
 		}
 	}
 

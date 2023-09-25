@@ -10,3 +10,4 @@
 ###< symfony/framework-bundle ###
 .idea
 src/Wsdl/
+config/soap-client.php

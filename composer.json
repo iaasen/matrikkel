@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-soap": "*",
+        "iaasen/stdlib": "dev-master",
         "laminas/laminas-soap": "^2",
         "nyholm/psr7": "^1.8",
         "phpro/soap-client": "^2.4",
@@ -17,9 +18,7 @@
         "symfony/framework-bundle": "6.3.*",
         "symfony/http-client": "^6.3",
         "symfony/runtime": "6.3.*",
-        "symfony/yaml": "6.3.*",
-        "iaasen/stdlib": "dev-master",
-        "nteb/api-entities": "dev-master"
+        "symfony/yaml": "6.3.*"
     },
     "config": {
         "allow-plugins": {
@@ -70,10 +69,5 @@
             "require": "6.3.*"
         }
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "git@git.nteb.no:ingvar/api-entities.git"
-        }
-    ]
+    "repositories": []
 }

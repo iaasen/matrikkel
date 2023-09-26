@@ -6,15 +6,33 @@
 
 namespace Iaasen\MatrikkelApi\Client;
 
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Iaasen\Exception\InvalidArgumentException;
+use Iaasen\Service\LaminasMvcConfig;
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class SoapClientFactory implements FactoryInterface {
+class SoapClientFactory implements AbstractFactoryInterface {
 
-	public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null) : object {
-		return new \stdClass();
-		// TODO: Implement __invoke() method.
+	/** Laminas abstract factory */
+	public function canCreate(ContainerInterface $container, $requestedName) {
+		return is_subclass_of($requestedName, AbstractSoapClient::class);
 	}
+
+	/** Laminas factory */
+	public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null) : object {
+		$config = $container->get(LaminasMvcConfig::class);
+		if(!isset($config['matrikkel-api'])) throw new InvalidArgumentException('Config is missing key "matrikkel-api"');
+		$config = $config['matrikkel-api'];
+
+		return new $requestedName(
+			$requestedName::WSDL[$config['environment'] ?? 'prod'],
+			[
+				'login' => $config['login'],
+				'password' => $config['password'],
+			],
+		);
+	}
+
 
 	/** Symfony factory */
 	public static function create(string $className) : AbstractSoapClient {

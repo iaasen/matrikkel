@@ -29,8 +29,24 @@ class KodelisteCommand extends AbstractCommand {
 		Timer::setStart();
 
 		$id = $input->getArgument('id');
-		if($id) dump($this->kodelisteService->getKodeliste($id, true));
-		else dump($this->kodelisteService->getKodelister());
+		if($id) {
+			$kodeliste = $this->kodelisteService->getKodeliste($id, true);
+			$this->io->title($kodeliste->kodeIdType);
+			$rows = [];
+			foreach($kodeliste->koderIds AS $kode) {
+				$rows[] = [$kode->id, $kode->navn[0]->value];
+			}
+			$this->io->table(['Kode', 'Navn'], $rows);
+
+		}
+		else {
+			$kodelister = $this->kodelisteService->getKodelister();
+			$rows = [];
+			foreach($kodelister AS $kodeliste) {
+				$rows[] = [$kodeliste->id, $kodeliste->kodeIdType];
+			}
+			$this->io->table(['Id', 'Type'], $rows);
+		}
 
 		$this->io->writeln('<info>Execution time: ' . Timer::getElapsed() . '</info>');
 		return Command::SUCCESS;

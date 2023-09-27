@@ -4,15 +4,15 @@
  * Date: 15.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Service;
+namespace Iaasen\Matrikkel\Service;
 
-use Iaasen\MatrikkelApi\Client\AdresseClient;
-use Iaasen\MatrikkelApi\Client\BubbleId;
-use Iaasen\MatrikkelApi\Client\MatrikkelsokClient;
-use Iaasen\MatrikkelApi\Client\StoreClient;
-use Iaasen\MatrikkelApi\Entity\Adresse;
-use Iaasen\MatrikkelApi\Entity\Matrikkelenhet;
-use Iaasen\MatrikkelApi\Entity\Veg;
+use Iaasen\Matrikkel\Client\AdresseClient;
+use Iaasen\Matrikkel\Client\BubbleId;
+use Iaasen\Matrikkel\Client\MatrikkelsokClient;
+use Iaasen\Matrikkel\Client\StoreClient;
+use Iaasen\Matrikkel\Entity\Adresse;
+use Iaasen\Matrikkel\Entity\Matrikkelenhet;
+use Iaasen\Matrikkel\Entity\Veg;
 use Iaasen\Service\ObjectKeyMatrix;
 
 class AdresseService extends AbstractService {

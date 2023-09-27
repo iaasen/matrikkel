@@ -4,7 +4,7 @@
  * Date: 14.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Client;
+namespace Iaasen\Matrikkel\Client;
 
 class AdresseClient extends AbstractSoapClient {
 	const WSDL = [

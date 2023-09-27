@@ -4,7 +4,7 @@
  * Date: 22.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Entity;
+namespace Iaasen\Matrikkel\Entity;
 
 use Iaasen\DateTime;
 use Iaasen\Model\AbstractEntityV2;

@@ -4,7 +4,7 @@
  * Date: 19.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Entity;
+namespace Iaasen\Matrikkel\Entity;
 
 use Iaasen\Model\AbstractEntityV2;
 

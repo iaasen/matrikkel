@@ -4,9 +4,9 @@
  * Date: 19.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Entity;
+namespace Iaasen\Matrikkel\Entity;
 
-use Iaasen\MatrikkelApi\Client\BubbleId;
+use Iaasen\Matrikkel\Client\BubbleId;
 use Iaasen\Model\AbstractEntityV2;
 
 /**
@@ -21,7 +21,7 @@ class Kodeliste extends AbstractEntityV2 {
 	protected string $kodeIdClass;
 	protected string $kodeIdNamespace;
 	protected string $kodeIdType;
-	/** @var \Iaasen\MatrikkelApi\Entity\Kode[]  */
+	/** @var \Iaasen\Matrikkel\Entity\Kode[]  */
 	protected array $koderIds;
 
 

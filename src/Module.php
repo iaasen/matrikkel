@@ -4,7 +4,7 @@
  * Date: 26.09.2023
  */
 
-namespace Iaasen\MatrikkelApi;
+namespace Iaasen\Matrikkel;
 
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 

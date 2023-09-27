@@ -5,7 +5,7 @@
  */
 
 
-namespace Iaasen\MatrikkelApi;
+namespace Iaasen\Matrikkel;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

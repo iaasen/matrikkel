@@ -4,7 +4,7 @@
  * Date: 05.06.2023
  */
 
-namespace Iaasen\MatrikkelApi\Console;
+namespace Iaasen\Matrikkel\Console;
 
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;

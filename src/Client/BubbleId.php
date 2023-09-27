@@ -4,7 +4,7 @@
  * Date: 15.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Client;
+namespace Iaasen\Matrikkel\Client;
 
 /**
  * Generates a SOAP_VAR used for "id" used by StoreService

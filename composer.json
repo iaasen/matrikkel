@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Iaasen\\MatrikkelApi\\": "src/",
+            "Iaasen\\Matrikkel\\": "src/",
             "App\\": "src/"
         }
     },

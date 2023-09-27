@@ -10,19 +10,19 @@ return [
 	],
 	'laminas-cli' => [
 		'commands' => [
-			'matrikkel:adresse' => \Iaasen\MatrikkelApi\Console\AdresseCommand::class,
+			'matrikkel:adresse' => \Iaasen\Matrikkel\Console\AdresseCommand::class,
 		],
 	],
 	'service_manager' => [
 		'abstract_factories' => [
-			\Iaasen\MatrikkelApi\Client\SoapClientFactory::class,
+			\Iaasen\Matrikkel\Client\SoapClientFactory::class,
 			ReflectionBasedAbstractFactory::class,
 		],
 		'factories' => [
-//			\Iaasen\MatrikkelApi\Client\AdresseClient::class => \Iaasen\MatrikkelApi\Client\SoapClientFactory::class,
-//			\Iaasen\MatrikkelApi\Client\KodelisteClient::class => \Iaasen\MatrikkelApi\Client\SoapClientFactory::class,
-//			\Iaasen\MatrikkelApi\Client\KommuneClient::class => \Iaasen\MatrikkelApi\Client\SoapClientFactory::class,
-//			\Iaasen\MatrikkelApi\Client\StoreClient::class => \Iaasen\MatrikkelApi\Client\SoapClientFactory::class,
+//			\Iaasen\Matrikkel\Client\AdresseClient::class => \Iaasen\Matrikkel\Client\SoapClientFactory::class,
+//			\Iaasen\Matrikkel\Client\KodelisteClient::class => \Iaasen\Matrikkel\Client\SoapClientFactory::class,
+//			\Iaasen\Matrikkel\Client\KommuneClient::class => \Iaasen\Matrikkel\Client\SoapClientFactory::class,
+//			\Iaasen\Matrikkel\Client\StoreClient::class => \Iaasen\Matrikkel\Client\SoapClientFactory::class,
 		],
 	],
 ];

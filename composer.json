@@ -1,5 +1,5 @@
 {
-    "name": "iaasen/matrikkel-api",
+    "name": "iaasen/matrikkel",
     "description": "Client to access MatrikkelAPI from Kartverket",
     "type": "project",
     "license": "GPL-3.0-or-later",

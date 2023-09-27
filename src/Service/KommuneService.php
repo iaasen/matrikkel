@@ -4,12 +4,12 @@
  * Date: 15.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Service;
+namespace Iaasen\Matrikkel\Service;
 
-use Iaasen\MatrikkelApi\Client\BubbleId;
-use Iaasen\MatrikkelApi\Client\KommuneClient;
-use Iaasen\MatrikkelApi\Client\StoreClient;
-use Iaasen\MatrikkelApi\Entity\Kommune;
+use Iaasen\Matrikkel\Client\BubbleId;
+use Iaasen\Matrikkel\Client\KommuneClient;
+use Iaasen\Matrikkel\Client\StoreClient;
+use Iaasen\Matrikkel\Entity\Kommune;
 
 class KommuneService extends AbstractService {
 

@@ -4,7 +4,7 @@
  * Date: 22.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Entity;
+namespace Iaasen\Matrikkel\Entity;
 
 /**
  * @property int $kommuneId

@@ -20,32 +20,32 @@ services:
 #            - '../src/Entity/'
 #            - '../src/Kernel.php'
 
-    Iaasen\MatrikkelApi\:
+    Iaasen\Matrikkel\:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-#    Iaasen\MatrikkelApi\Service\SoapClient:
-#        factory: [ 'Iaasen\MatrikkelApi\Service\SoapClientFactory', 'create' ]
+#    Iaasen\Matrikkel\Service\SoapClient:
+#        factory: [ 'Iaasen\Matrikkel\Service\SoapClientFactory', 'create' ]
 #        arguments: []
 
-    Iaasen\MatrikkelApi\Client\AdresseClient:
-        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
-        arguments: [ Iaasen\MatrikkelApi\Client\AdresseClient ]
-    Iaasen\MatrikkelApi\Client\KommuneClient:
-        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
-        arguments: [ Iaasen\MatrikkelApi\Client\KommuneClient ]
-    Iaasen\MatrikkelApi\Client\KodelisteClient:
-        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
-        arguments: [ Iaasen\MatrikkelApi\Client\KodelisteClient ]
-    Iaasen\MatrikkelApi\Client\StoreClient:
-        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
-        arguments: [ Iaasen\MatrikkelApi\Client\StoreClient ]
-    Iaasen\MatrikkelApi\Client\MatrikkelsokClient:
-        factory: [ Iaasen\MatrikkelApi\Client\SoapClientFactory, create ]
-        arguments: [ Iaasen\MatrikkelApi\Client\MatrikkelsokClient ]
+    Iaasen\Matrikkel\Client\AdresseClient:
+        factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\Matrikkel\Client\AdresseClient ]
+    Iaasen\Matrikkel\Client\KommuneClient:
+        factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\Matrikkel\Client\KommuneClient ]
+    Iaasen\Matrikkel\Client\KodelisteClient:
+        factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\Matrikkel\Client\KodelisteClient ]
+    Iaasen\Matrikkel\Client\StoreClient:
+        factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\Matrikkel\Client\StoreClient ]
+    Iaasen\Matrikkel\Client\MatrikkelsokClient:
+        factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\Matrikkel\Client\MatrikkelsokClient ]
 
 
     # add more service definitions when explicit configuration is needed

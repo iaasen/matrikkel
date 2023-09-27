@@ -4,7 +4,7 @@
  * Date: 15.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Service;
+namespace Iaasen\Matrikkel\Service;
 
 abstract class AbstractService implements ServiceInterface {
 

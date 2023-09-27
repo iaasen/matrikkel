@@ -4,15 +4,15 @@
  * Date: 15.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Service;
+namespace Iaasen\Matrikkel\Service;
 
-use Iaasen\MatrikkelApi\Client\AdresseClient;
-use Iaasen\MatrikkelApi\Client\BubbleId;
-use Iaasen\MatrikkelApi\Client\MatrikkelsokClient;
-use Iaasen\MatrikkelApi\Client\StoreClient;
-use Iaasen\MatrikkelApi\Entity\Adresse;
-use Iaasen\MatrikkelApi\Entity\Matrikkelenhet;
-use Iaasen\MatrikkelApi\Entity\Veg;
+use Iaasen\Matrikkel\Client\AdresseClient;
+use Iaasen\Matrikkel\Client\BubbleId;
+use Iaasen\Matrikkel\Client\MatrikkelsokClient;
+use Iaasen\Matrikkel\Client\StoreClient;
+use Iaasen\Matrikkel\Entity\Adresse;
+use Iaasen\Matrikkel\Entity\Matrikkelenhet;
+use Iaasen\Matrikkel\Entity\Veg;
 use Iaasen\Service\ObjectKeyMatrix;
 
 class AdresseService extends AbstractService {
@@ -120,11 +120,15 @@ class AdresseService extends AbstractService {
 				'startPosisjon' => 0,
 			]
 		);
+
+		// Empty result
+		if(!isset($result->return->item)) return [];
+
 		$addressIds = [];
 		foreach($result->return->item AS $item) {
 			$match = [];
 			preg_match('/ID: (.+), OBJEKTTYPE: (.+)/', $item, $match);
-			$addressIds[$match[1]] = $match[2];
+			if($match[2] == 'VEGADRESSE') $addressIds[$match[1]] = $match[2];
 		}
 		return $this->getAddressesByAddressIds(array_keys($addressIds));
 	}

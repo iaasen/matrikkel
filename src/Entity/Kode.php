@@ -4,7 +4,7 @@
  * Date: 19.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Entity;
+namespace Iaasen\Matrikkel\Entity;
 
 use Iaasen\Model\AbstractEntityV2;
 
@@ -16,7 +16,7 @@ use Iaasen\Model\AbstractEntityV2;
 class Kode extends AbstractEntityV2 {
 	protected int $id;
 	protected string $kodeverdi;
-	/** @var \Iaasen\MatrikkelApi\Entity\KodeNavn[] */
+	/** @var \Iaasen\Matrikkel\Entity\KodeNavn[] */
 	protected array $navn;
 
 

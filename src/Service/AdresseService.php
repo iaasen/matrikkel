@@ -104,11 +104,15 @@ class AdresseService extends AbstractService {
 				'startPosisjon' => 0,
 			]
 		);
+
+		// Empty result
+		if(!isset($result->return->item)) return [];
+
 		$addressIds = [];
 		foreach($result->return->item AS $item) {
 			$match = [];
 			preg_match('/ID: (.+), OBJEKTTYPE: (.+)/', $item, $match);
-			$addressIds[$match[1]] = $match[2];
+			if($match[2] == 'VEGADRESSE') $addressIds[$match[1]] = $match[2];
 		}
 		return $this->getAddressesByAddressIds(array_keys($addressIds));
 	}

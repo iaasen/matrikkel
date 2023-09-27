@@ -19,7 +19,7 @@ class KommuneService extends AbstractService {
 	) {}
 
 
-	public function getKommuneById(int $id) : object {
+	public function getKommuneById(int $id) : ?Kommune {
 		$result = $this->storeClient->getObject([
 			'id' => BubbleId::getId($id, 'KommuneId'),
 		]);
@@ -27,8 +27,23 @@ class KommuneService extends AbstractService {
 	}
 
 
-	public function getKommuneByNumber(int $number) : object {
-		return $this->getKommuneById($number);
+	public function getKommuneByNumber(string|int $number) : ?Kommune {
+		return $this->getKommuneById((int) $number);
+	}
+
+
+	/**
+	 * @param int[] $ids
+	 * @return Kommune[]
+	 */
+	public function getKommunerByIds(array $ids) : array {
+		$result = $this->storeClient->getObjects(['ids' => BubbleId::getIds($ids, 'KommuneId')]);
+		if(is_object($result->return->item)) $result->return->item = [$result->return->item];
+		$kommuner = [];
+		foreach($result->return->item as $item) {
+			$kommuner[] = new Kommune($item);
+		}
+		return $kommuner;
 	}
 
 }

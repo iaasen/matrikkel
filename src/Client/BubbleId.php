@@ -15,12 +15,12 @@ class BubbleId {
 
 	const NAMESPACE_BASE = 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/';
 	const NAMESPACES = [
-		'KommuneId' => self::NAMESPACE_BASE . 'kommune',
-		'KodelisteId' => self::NAMESPACE_BASE . 'kodeliste',
 		'AdresseId' => self::NAMESPACE_BASE . 'adresse',
-		'VegId' => self::NAMESPACE_BASE . 'adresse',
+		'KodelisteId' => self::NAMESPACE_BASE . 'kodeliste',
+		'KommuneId' => self::NAMESPACE_BASE . 'kommune',
+		'KommunevapenId' => self::NAMESPACE_BASE . 'kommune',
 		'MatrikkelenhetId' => self::NAMESPACE_BASE . 'matrikkelenhet',
-
+		'VegId' => self::NAMESPACE_BASE . 'adresse',
 	];
 
 

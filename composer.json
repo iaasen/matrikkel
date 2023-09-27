@@ -4,6 +4,9 @@
     "type": "project",
     "license": "GPL-3.0-or-later",
     "prefer-stable": true,
+    "preferred-install": {
+        "iaasen/*": "source"
+    },
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",

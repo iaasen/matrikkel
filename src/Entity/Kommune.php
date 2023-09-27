@@ -6,48 +6,21 @@
 
 namespace Iaasen\MatrikkelApi\Entity;
 
-use Iaasen\DateTime;
-use Iaasen\Model\AbstractEntityV2;
-
-
 /**
- * TODO Not complete. Finish it when actually needed
+ * @property string $kommunenummer
+ * @property string $kommunenavn
+ * @property int $fylkeId
  */
-class Kommune extends AbstractEntityV2 {
-	protected int $id;
-	protected DateTime $oppdateringsdato;
-	protected int $versjonId;
-	protected string $oppdatertAv;
-	protected int $versjon;
-	protected int $kommunenummer;
+class Kommune extends AbstractEntity {
+	protected string $kommunenummer;
 	protected string $kommunenavn;
 	protected int $fylkeId;
+	// There are more fields available from the API that are not included here
 
 
-
-
-
-
-
-
-
-	public function setId(object|int $id) : void {
-		if(is_object($id)) {
-			$this->id = $id->value;
-		}
-		else $this->id = $id;
-	}
-
-
-	public function setOppdateringsdato(\stdClass|DateTime $dato) : void {
-		if($dato instanceof DateTime) $this->oppdateringsdato = $dato;
-		else $this->oppdateringsdato = new DateTime($dato->timestamp);
-	}
-
-
-	public function setFylkeId(int|object $id) : void {
-		if(is_object($id)) $this->fylkeId = $id->value;
-		else $this->fylkeId = $id;
+	public function setFylkeId(mixed $value) {
+		if(is_object($value)) $value = $value->value;
+		$this->setPrimitiveInternal('int', 'fylkeId', $value);
 	}
 
 }

@@ -20,6 +20,7 @@ class AdresseService extends AbstractService {
 		protected AdresseClient $adresseClient,
 		protected StoreClient $storeClient,
 		protected MatrikkelsokClient $matrikkelsokClient,
+		protected KommuneService $kommuneService,
 	) {}
 
 
@@ -86,8 +87,23 @@ class AdresseService extends AbstractService {
 		foreach($result->return->item AS $item) {
 			$matrikkelObjects[] = new Matrikkelenhet($item);
 		}
+		$matrikkelObjects = $this->populateKommune($matrikkelObjects);
 		ObjectKeyMatrix::populateObjectKeyMatrixWithAttribute($matrikkelIdIndex, 'matrikkelenhet', $matrikkelObjects, 'id');
 		return $addresses;
+	}
+
+
+	/**
+	 * @param Matrikkelenhet[] $matrikkelenheter
+	 * @return Matrikkelenhet[]
+	 */
+	protected function populateKommune(array $matrikkelenheter) : array {
+		$matrikkelNumberObjects = [];
+		foreach($matrikkelenheter AS $enhet) $matrikkelNumberObjects[] = $enhet->matrikkelnummer;
+		$kommuneIdIndex = ObjectKeyMatrix::getObjectKeyMatrix($matrikkelNumberObjects, 'kommuneId');
+		$kommuner = $this->kommuneService->getKommunerByIds(array_keys($kommuneIdIndex));
+		ObjectKeyMatrix::populateObjectKeyMatrixWithAttribute($kommuneIdIndex, 'kommune', $kommuner, 'id');
+		return $matrikkelenheter;
 	}
 
 

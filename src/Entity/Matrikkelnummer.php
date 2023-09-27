@@ -14,6 +14,7 @@ use Iaasen\Model\AbstractEntityV2;
  * @property int $bruksnummer
  * @property int $festenummer
  * @property int $seksjonsnummer
+ * @property Kommune $kommune
  */
 class Matrikkelnummer extends AbstractEntityV2 {
 	protected int $kommuneId;
@@ -21,6 +22,7 @@ class Matrikkelnummer extends AbstractEntityV2 {
 	protected int $bruksnummer;
 	protected int $festenummer;
 	protected int $seksjonsnummer;
+	protected Kommune $kommune;
 
 
 	public function setKommuneId($value) : void {

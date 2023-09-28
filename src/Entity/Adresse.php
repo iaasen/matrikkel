@@ -21,6 +21,7 @@ use Iaasen\Matrikkel\Entity\Krets\Tettsted;
  * @property int $nummer
  * @property Veg $veg
  * @property Matrikkelenhet $matrikkelenhet
+ * @property Representasjonspunkt $representasjonspunkt
  * @property Postnummeromrade $postnummeromrade
  * @property Tettsted $tettsted
  * @property Kirkesokn $kirkesokn
@@ -29,7 +30,6 @@ use Iaasen\Matrikkel\Entity\Krets\Tettsted;
  * @property Svalbardomrade $svalbardomrade
  */
 class Adresse extends AbstractEntity {
-	// TODO: $representasjonspunkt
 	protected int $matrikkelenhetId;
 	/** @var int[] */
 	protected array $kretsIds;
@@ -37,6 +37,7 @@ class Adresse extends AbstractEntity {
 	protected int $nummer;
 	protected Veg $veg;
 	protected Matrikkelenhet $matrikkelenhet;
+	protected Representasjonspunkt $representasjonspunkt;
 
 	protected ?Postnummeromrade $postnummeromrade;
 	protected ?Tettsted $tettsted;

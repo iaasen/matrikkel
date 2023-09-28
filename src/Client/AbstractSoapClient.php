@@ -47,7 +47,7 @@ class AbstractSoapClient extends Client {
 		return [
 			'locale' => 'no_NO',
 			'brukOriginaleKoordinater' => false,
-			'koordinatsystemKodeId' => ['value' => 22], // 22 = E89_32
+			'koordinatsystemKodeId' => ['value' => 22], // See Representasjonspunkt::KOORDINATSYSTEM_KODE_ID_OPTIONS
 			'systemVersion' => '4.4',
 			'klientIdentifikasjon' => $this->getOptions()['login'],
 			'setSnapshotVersion' =>	new \DateTime('9999-01-01 00:00:00'),

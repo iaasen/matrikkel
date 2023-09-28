@@ -24,7 +24,7 @@ abstract class AbstractEntity extends AbstractEntityV2 {
 	protected int $versjon;
 
 
-	public function setId(mixed $value) {
+	public function setId(mixed $value) : void {
 		if(is_object($value)) $value = $value->value;
 		$this->setPrimitiveInternal('int', 'id', $value);
 	}

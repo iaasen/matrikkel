@@ -8,6 +8,15 @@ namespace Iaasen\Matrikkel\Entity;
 
 use Iaasen\Model\AbstractEntityV2;
 
+/**
+ * @property int $koordinatsystemKodeId
+ * @property int $originalKoordinatsystemKodeId
+ * @property int $koordinatkvalitetKodeId
+ * @property bool $stedfestingVerifisert
+ * @property float $x;
+ * @property float $y;
+ * @property float $z;
+ */
 class Representasjonspunkt extends AbstractEntityV2 {
 	// Lookup kodeliste id 3
 	protected int $koordinatsystemKodeId;
@@ -16,19 +25,19 @@ class Representasjonspunkt extends AbstractEntityV2 {
 	protected int $koordinatkvalitetKodeId;
 	protected bool $stedfestingVerifisert;
 
-	protected float $x;
-	protected float $y;
-	protected float $z;
+	protected float $x; //East/west
+	protected float $y; // North/south
+	protected float $z; // Height
 
 	/**
 	 * Lookup Kodeliste id 3 for full list
 	 * 84 (lat/long) doesn't seem to be supported
 	 */
 	const KOORDINATSYSTEM_KODE_ID_OPTIONS = [
-		21 => 'EUREF89 UTM Sone 31',
-		22 => 'EUREF89 UTM Sone 32',
-		23 => 'EUREF89 UTM Sone 33',
-		84 => 'EUREF89 Geografisk', // Not working
+		9 => 'EUREF89 UTM Sone 31',
+		10 => 'EUREF89 UTM Sone 32',
+		11 => 'EUREF89 UTM Sone 33',
+		24 => 'EUREF89 Geografisk', // Not working
 	];
 
 

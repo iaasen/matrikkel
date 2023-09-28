@@ -56,7 +56,8 @@ class AdresseService extends AbstractService {
 	protected function populate(array $addresses) : array {
 		$addresses = $this->populateVeg($addresses);
 		$addresses = $this->populateMatrikkelenhet($addresses);
-		return $this->populateKretser($addresses);
+		return $this->populatePostnummeromrade($addresses);
+		//return $this->populateKretser($addresses);
 	}
 
 
@@ -100,11 +101,31 @@ class AdresseService extends AbstractService {
 	 * @param Adresse[] $addresses
 	 * @return Adresse[]
 	 */
+	protected function populatePostnummeromrade(array $addresses) : array {
+		foreach($addresses AS $address) {
+			$address->postnummeromrade = null;
+			$result = $this->adresseClient->findObjekterForAdresse(['adresseId' => BubbleId::getId($address->id, 'AdresseId')]);
+			foreach($result->return->bubbleObjects->item AS $item) {
+				if(isset($item->kretstypeKodeId) && $item->kretstypeKodeId->value == 4097)
+					$address->postnummeromrade = new Krets\Postnummeromrade($item);
+			}
+		}
+		return $addresses;
+	}
+
+
+	/**
+	 * @param Adresse[] $addresses
+	 * @return Adresse[]
+	 */
 	protected function populateKretser(array $addresses) {
 		// Make index and initialize $kretser
 		$kretsIdIndex = [];
 		foreach($addresses AS $address) {
-			$address->initializeKretser();
+			foreach(Krets\Krets::KRETSTYPER AS $type) {
+				$property = lcfirst($type);
+				$address->$property = null;
+			}
 			foreach($address->kretsIds AS $kretsId) {
 				$kretsIdIndex[$kretsId][] = $address;
 			}

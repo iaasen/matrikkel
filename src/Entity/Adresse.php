@@ -21,6 +21,12 @@ use Iaasen\Matrikkel\Entity\Krets\Tettsted;
  * @property int $nummer
  * @property Veg $veg
  * @property Matrikkelenhet $matrikkelenhet
+ * @property Postnummeromrade $postnummeromrade
+ * @property Tettsted $tettsted
+ * @property Kirkesokn $kirkesokn
+ * @property Grunnkrets $grunnkrets
+ * @property Stemmekrets $stemmekrets
+ * @property Svalbardomrade $svalbardomrade
  */
 class Adresse extends AbstractEntity {
 	// TODO: $representasjonspunkt
@@ -58,16 +64,6 @@ class Adresse extends AbstractEntity {
 	public function setVegId(mixed $value) : void {
 		if(is_object($value)) $value = $value->value;
 		$this->setPrimitiveInternal('int', 'vegId', $value);
-	}
-
-
-	public function initializeKretser() : void {
-		$this->postnummeromrade = null;
-		$this->tettsted = null;
-		$this->kirkesokn = null;
-		$this->grunnkrets = null;
-		$this->stemmekrets = null;
-		$this->svalbardomrade = null;
 	}
 
 

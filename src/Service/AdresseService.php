@@ -22,13 +22,16 @@ use Iaasen\Matrikkel\Entity\Veg;
 use Iaasen\Service\ObjectKeyMatrix;
 
 class AdresseService extends AbstractService {
+	protected TranscodeService $transcodeService;
+
 	public function __construct(
 		protected AdresseClient $adresseClient,
 		protected StoreClient $storeClient,
 		protected MatrikkelsokClient $matrikkelsokClient,
-		protected KommuneService $kommuneService,
-		protected TranscodeService $transcodeService,
-	) {}
+		protected KommuneService $kommuneService
+	) {
+		$this->transcodeService = new TranscodeService();
+	}
 
 
 	public function getAddressByAddressId(int $addressId) : ?Adresse {

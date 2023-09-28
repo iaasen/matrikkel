@@ -19,7 +19,9 @@ class BubbleId {
 		'KodelisteId' => self::NAMESPACE_BASE . 'kodeliste',
 		'KommuneId' => self::NAMESPACE_BASE . 'kommune',
 		'KommunevapenId' => self::NAMESPACE_BASE . 'kommune',
+		'KretsId' => self::NAMESPACE_BASE . 'adresse',
 		'MatrikkelenhetId' => self::NAMESPACE_BASE . 'matrikkelenhet',
+		'PostnummeromradeId' => self::NAMESPACE_BASE . 'adresse',
 		'VegId' => self::NAMESPACE_BASE . 'adresse',
 	];
 

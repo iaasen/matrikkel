@@ -54,7 +54,8 @@ class AdresseService extends AbstractService {
 	 */
 	protected function populate(array $addresses) : array {
 		$addresses = $this->populateVeg($addresses);
-		return $this->populateMatrikkelenhet($addresses);
+		$addresses = $this->populateMatrikkelenhet($addresses);
+		return $this->populateKretser($addresses);
 	}
 
 
@@ -89,6 +90,40 @@ class AdresseService extends AbstractService {
 		}
 		$matrikkelObjects = $this->populateKommune($matrikkelObjects);
 		ObjectKeyMatrix::populateObjectKeyMatrixWithAttribute($matrikkelIdIndex, 'matrikkelenhet', $matrikkelObjects, 'id');
+		return $addresses;
+	}
+
+
+	/**
+	 * @param Adresse[] $addresses
+	 * @return Adresse[]
+	 */
+	protected function populateKretser(array $addresses) {
+		// Make index and initialize $kretser
+		$kretsIdIndex = [];
+		foreach($addresses AS $address) {
+			$address->initializeKretser();
+			foreach($address->kretsIds AS $kretsId) {
+				$kretsIdIndex[$kretsId][] = $address;
+			}
+		}
+
+		// Collect kretser
+		$result = $this->storeClient->getObjects(['ids' => BubbleId::getIds(array_keys($kretsIdIndex), 'KretsId')]);
+		if(is_object($result->return->item)) $result->return->item = [$result->return->item];
+
+		// Instantiate krets objects
+		$kretser = [];
+		foreach($result->return->item AS $item) {
+			if($type = Krets\Krets::KRETSTYPER[$item->kretstypeKodeId->value] ?? false) {
+				$className = Krets::class . '\\' . $type;
+				$kretser[] = new $className($item);
+			}
+		}
+
+		// Populate addresses using the index
+		ObjectKeyMatrix::populateObjectKeyMatrixWithFunctionCall($kretsIdIndex, 'addKrets', $kretser, 'id');
+
 		return $addresses;
 	}
 

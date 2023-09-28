@@ -60,4 +60,9 @@ class KodelisteService extends AbstractService {
 		return new Kode($result->return);
 	}
 
+
+	public function getGenerellKretstypeKoder() : Kodeliste {
+		return $this->getKodeliste(10003 ,true);
+	}
+
 }

@@ -11,6 +11,7 @@ use Iaasen\Matrikkel\Client\BubbleId;
 use Iaasen\Matrikkel\Client\MatrikkelsokClient;
 use Iaasen\Matrikkel\Client\StoreClient;
 use Iaasen\Matrikkel\Entity\Adresse;
+use Iaasen\Matrikkel\Entity\Krets;
 use Iaasen\Matrikkel\Entity\Matrikkelenhet;
 use Iaasen\Matrikkel\Entity\Veg;
 use Iaasen\Service\ObjectKeyMatrix;
@@ -67,6 +68,7 @@ class AdresseService extends AbstractService {
 		$vegIdIndex = ObjectKeyMatrix::getObjectKeyMatrix($addresses, 'vegId');
 		$result = $this->storeClient->getObjects(['ids' => BubbleId::getIds(array_keys($vegIdIndex), 'VegId')]);
 		if(is_object($result->return->item)) $result->return->item = [$result->return->item];
+
 		$vegObjects = [];
 		foreach($result->return->item AS $item) {
 			$vegObjects[] = new Veg($item);
@@ -166,6 +168,35 @@ class AdresseService extends AbstractService {
 			if($match[2] == 'VEGADRESSE') $addressIds[$match[1]] = $match[2];
 		}
 		return $this->getAddressesByAddressIds(array_keys($addressIds));
+	}
+
+
+	public function getPostnummeromradeById(int $id) : ?Krets\Postnummeromrade {
+		try {
+			$result = $this->storeClient->getObject([
+				'id' => BubbleId::getId($id, 'PostnummeromradeId')
+			]);
+		}
+		catch (\SoapFault $e) {
+			if(str_contains($e->getMessage(), '[PostnummeromradeId')) return null;
+			throw $e;
+		}
+		return new Krets\Postnummeromrade($result->return);
+	}
+
+
+	public function getPostnummeromradeByNumber(int $postnr) : ?Krets\Postnummeromrade {
+		try {
+			$result = $this->adresseClient->findPostnummeromrade([
+				'postnr' => $postnr,
+			]);
+		}
+		catch (\SoapFault $e) {
+			if(str_contains($e->getMessage(), 'Kunne ikke finne')) return null;
+			throw $e;
+		}
+		$id = $result->return->value;
+		return $this->getPostnummeromradeById($id);
 	}
 
 }

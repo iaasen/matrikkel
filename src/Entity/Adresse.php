@@ -19,6 +19,7 @@ use Iaasen\Matrikkel\Entity\Krets\Tettsted;
  * @property int[] $kretsIds
  * @property int $vegId
  * @property int $nummer
+ * @property ?string $bokstav
  * @property Veg $veg
  * @property Matrikkelenhet $matrikkelenhet
  * @property Representasjonspunkt $representasjonspunkt
@@ -35,6 +36,7 @@ class Adresse extends AbstractEntity {
 	protected array $kretsIds;
 	protected int $vegId;
 	protected int $nummer;
+	protected ?string $bokstav = null;
 	protected Veg $veg;
 	protected Matrikkelenhet $matrikkelenhet;
 	protected Representasjonspunkt $representasjonspunkt;

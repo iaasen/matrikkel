@@ -26,9 +26,9 @@ class Representasjonspunkt extends AbstractEntityV2 {
 	protected int $koordinatkvalitetKodeId;
 	protected bool $stedfestingVerifisert;
 
-	protected float $x; //East/west
-	protected float $y; // North/south
-	protected float $z; // Height
+	protected ?float $x; //East/west
+	protected ?float $y; // North/south
+	protected ?float $z; // Height
 
 	/**
 	 * Lookup Kodeliste id 3 for full list
@@ -61,9 +61,9 @@ class Representasjonspunkt extends AbstractEntityV2 {
 
 
 	public function setPosition(object $value) : void {
-		$this->x = $value->x;
-		$this->y = $value->y;
-		$this->z = $value->z;
+		$this->x = $value->x ?? null;
+		$this->y = $value->y ?? null;
+		$this->z = $value->z ?? null;
 	}
 
 

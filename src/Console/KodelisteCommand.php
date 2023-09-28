@@ -34,9 +34,9 @@ class KodelisteCommand extends AbstractCommand {
 			$this->io->title($kodeliste->kodeIdType);
 			$rows = [];
 			foreach($kodeliste->koderIds AS $kode) {
-				$rows[] = [$kode->id, $kode->navn[0]->value];
+				$rows[] = [$kode->id, $kode->kodeverdi, $kode->navn[0]->value];
 			}
-			$this->io->table(['Kode', 'Navn'], $rows);
+			$this->io->table(['Id', 'Verdi', 'Navn'], $rows);
 
 		}
 		else {

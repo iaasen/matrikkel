@@ -36,7 +36,12 @@ class AdresseCommand extends AbstractCommand {
 		}
 		else {
 			if($search = $input->getOption('search')) {
-				dump($this->adresseService->searchAddress($search));
+				$addresses = $this->adresseService->searchAddress($search);
+				$rows = [];
+				foreach($addresses AS $address) {
+					$rows[] = [$address->id, $address->veg->adressenavn, $address->nummer . $address->bokstav, $address->postnummeromrade->kretsnummer . ' ' . $address->postnummeromrade->kretsnavn];
+				}
+				$this->io->table(['AdresseId', 'Veg', 'Nummer', 'Poststed'], $rows);
 			}
 		}
 

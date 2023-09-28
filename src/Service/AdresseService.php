@@ -6,6 +6,10 @@
 
 namespace Iaasen\Matrikkel\Service;
 
+use Iaasen\Exception\InvalidArgumentException;
+use Iaasen\Geonorge\Entity\LocationLatLong;
+use Iaasen\Geonorge\Entity\LocationUtm;
+use Iaasen\Geonorge\TranscodeService;
 use Iaasen\Matrikkel\Client\AdresseClient;
 use Iaasen\Matrikkel\Client\BubbleId;
 use Iaasen\Matrikkel\Client\MatrikkelsokClient;
@@ -13,6 +17,7 @@ use Iaasen\Matrikkel\Client\StoreClient;
 use Iaasen\Matrikkel\Entity\Adresse;
 use Iaasen\Matrikkel\Entity\Krets;
 use Iaasen\Matrikkel\Entity\Matrikkelenhet;
+use Iaasen\Matrikkel\Entity\Representasjonspunkt;
 use Iaasen\Matrikkel\Entity\Veg;
 use Iaasen\Service\ObjectKeyMatrix;
 
@@ -22,6 +27,7 @@ class AdresseService extends AbstractService {
 		protected StoreClient $storeClient,
 		protected MatrikkelsokClient $matrikkelsokClient,
 		protected KommuneService $kommuneService,
+		protected TranscodeService $transcodeService,
 	) {}
 
 
@@ -218,6 +224,29 @@ class AdresseService extends AbstractService {
 		}
 		$id = $result->return->value;
 		return $this->getPostnummeromradeById($id);
+	}
+
+
+	public function getLocationUtm(Representasjonspunkt $rep, int $zone = 32) : LocationUtm {
+		if($rep->isUtm()) {
+			if($rep->getUtmZone() == $zone) return new LocationUtm($rep->y, $rep->x, $rep->getUtmZone() . 'N');
+			else return $this->transcodeService->transcodeUtmZoneToUtmZone($rep->y, $rep->x, $rep->getUtmZone(), $zone);
+		}
+		elseif($rep->isLatLong()) {
+			return $this->transcodeService->transcodeLatLongToUTM($rep->y, $rep->x, $zone);
+		}
+		throw new InvalidArgumentException('Unknown coordinate system');
+	}
+
+
+	public function getLocationLatLong(Representasjonspunkt $rep) : LocationLatLong {
+		if($rep->isUtm()) {
+			return $this->transcodeService->transcodeUTMtoLatLong($rep->y, $rep->x, $rep->getUtmZone());
+		}
+		elseif($rep->isLatLong()) {
+			return new LocationLatLong($rep->y, $rep->x);
+		}
+		throw new InvalidArgumentException('Unknown coordinate system');
 	}
 
 }

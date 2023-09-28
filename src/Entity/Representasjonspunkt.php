@@ -6,6 +6,7 @@
 
 namespace Iaasen\Matrikkel\Entity;
 
+use Iaasen\Exception\InvalidArgumentException;
 use Iaasen\Model\AbstractEntityV2;
 
 /**
@@ -63,6 +64,22 @@ class Representasjonspunkt extends AbstractEntityV2 {
 		$this->x = $value->x;
 		$this->y = $value->y;
 		$this->z = $value->z;
+	}
+
+
+	public function isUtm(): bool {
+		return $this->koordinatsystemKodeId >= 9 && $this->koordinatsystemKodeId <= 14;
+	}
+
+
+	public function isLatLong(): bool {
+		return $this->koordinatkvalitetKodeId == 24;
+	}
+
+
+	public function getUtmZone()  : int {
+		if(!$this->isUtm()) throw new InvalidArgumentException('Not an UTM coordinate');
+		return $this->koordinatsystemKodeId + 22;
 	}
 
 }

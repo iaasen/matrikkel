@@ -51,6 +51,7 @@ class AdresseService extends AbstractService {
 		$idObjects = BubbleId::getIds($addressIds, 'AdresseId');
 		$result = $this->storeClient->getObjects(['ids' => $idObjects]);
 		$addresses =[];
+		if(is_object($result->return->item)) $result->return->item = [$result->return->item];
 		foreach($result->return->item AS $item) {
 			$addresses[] = new Adresse($item);
 		}
@@ -192,6 +193,8 @@ class AdresseService extends AbstractService {
 		if(!isset($result->return->item)) return [];
 
 		$addressIds = [];
+		$eiendomIds = [];
+		if(is_string($result->return->item)) $result->return->item = [$result->return->item];
 		foreach($result->return->item AS $item) {
 			$match = [];
 			preg_match('/ID: (.+), OBJEKTTYPE: (.+)/', $item, $match);

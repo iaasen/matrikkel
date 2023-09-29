@@ -11,6 +11,6 @@ namespace Iaasen\Matrikkel\Entity;
  * @property string $bruksnavn
  */
 class Matrikkelenhet extends AbstractEntity {
-	protected string $bruksnavn;
+	protected ?string $bruksnavn = null;
 	protected Matrikkelnummer $matrikkelnummer;
 }

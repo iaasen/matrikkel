@@ -6,6 +6,9 @@
 
 namespace Iaasen\Matrikkel\Client;
 
+/**
+ * @method findMatrikkelenhet(array $request)
+ */
 class MatrikkelenhetClient extends AbstractSoapClient {
 	const WSDL = [
 		'prod' => 'https://matrikkel.no/matrikkelapi/wsapi/v1/MatrikkelenhetServiceWS?WSDL',

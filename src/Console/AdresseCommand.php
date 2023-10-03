@@ -31,7 +31,7 @@ class AdresseCommand extends AbstractCommand {
 
 		$id = $input->getArgument('id');
 		if($id) {
-			$address = $this->adresseService->getAddressByAddressId($id);
+			$address = $this->adresseService->getAddressById($id);
 			dump($address);
 		}
 		else {

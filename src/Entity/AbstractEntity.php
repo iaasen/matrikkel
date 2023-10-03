@@ -35,4 +35,9 @@ abstract class AbstractEntity extends AbstractEntityV2 {
 		$this->setObjectInternal(DateTime::class, 'oppdateringsdato', $value);
 	}
 
+	protected function setValueObjectInternal(string $name, mixed $value, string $type = 'int') : void {
+		if(is_object($value)) $value = $value->value;
+		$this->setPrimitiveInternal($type, $name, $value);
+	}
+
 }

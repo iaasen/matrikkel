@@ -6,6 +6,9 @@
 
 namespace Iaasen\Matrikkel\Client;
 
+/**
+ * @method findObjekterForAdresse(array $request)
+ */
 class AdresseClient extends AbstractSoapClient {
 	const WSDL = [
 		'prod' => 'https://matrikkel.no/matrikkelapi/wsapi/v1/AdresseServiceWS?WSDL',

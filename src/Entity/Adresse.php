@@ -8,6 +8,7 @@ namespace Iaasen\Matrikkel\Entity;
 
 use Iaasen\Matrikkel\Entity\Krets\Grunnkrets;
 use Iaasen\Matrikkel\Entity\Krets\Kirkesokn;
+use Iaasen\Matrikkel\Entity\Krets\Kommunalkrets;
 use Iaasen\Matrikkel\Entity\Krets\Krets;
 use Iaasen\Matrikkel\Entity\Krets\Postnummeromrade;
 use Iaasen\Matrikkel\Entity\Krets\Stemmekrets;
@@ -40,6 +41,8 @@ class Adresse extends AbstractEntity {
 	protected Veg $veg;
 	protected Matrikkelenhet $matrikkelenhet;
 	protected Representasjonspunkt $representasjonspunkt;
+	/** @var \Iaasen\Matrikkel\Entity\Bruksenhet[] */
+	protected array $bruksenheter;
 
 	protected ?Postnummeromrade $postnummeromrade;
 	protected ?Tettsted $tettsted;
@@ -47,6 +50,7 @@ class Adresse extends AbstractEntity {
 	protected ?Grunnkrets $grunnkrets;
 	protected ?Stemmekrets $stemmekrets;
 	protected ?Svalbardomrade $svalbardomrade;
+	protected ?Kommunalkrets $kommunalkrets;
 
 
 	public function setMatrikkelenhetId($value) : void {
@@ -73,6 +77,11 @@ class Adresse extends AbstractEntity {
 	public function addKrets(Krets $krets) : void {
 		$propertyName = lcfirst(Krets::KRETSTYPER[$krets->kretstypeKodeId]);
 		$this->$propertyName = $krets;
+	}
+
+
+	public function addBruksenhet(Bruksenhet $bruksenhet) : void {
+		$this->bruksenheter[] = $bruksenhet;
 	}
 
 }

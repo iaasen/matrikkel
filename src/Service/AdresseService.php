@@ -12,9 +12,11 @@ use Iaasen\Geonorge\Entity\LocationUtm;
 use Iaasen\Geonorge\TranscodeService;
 use Iaasen\Matrikkel\Client\AdresseClient;
 use Iaasen\Matrikkel\Client\BubbleId;
+use Iaasen\Matrikkel\Client\MatrikkelenhetClient;
 use Iaasen\Matrikkel\Client\MatrikkelsokClient;
 use Iaasen\Matrikkel\Client\StoreClient;
 use Iaasen\Matrikkel\Entity\Adresse;
+use Iaasen\Matrikkel\Entity\Bruksenhet;
 use Iaasen\Matrikkel\Entity\Krets;
 use Iaasen\Matrikkel\Entity\Matrikkelenhet;
 use Iaasen\Matrikkel\Entity\Representasjonspunkt;
@@ -28,16 +30,15 @@ class AdresseService extends AbstractService {
 		protected AdresseClient $adresseClient,
 		protected StoreClient $storeClient,
 		protected MatrikkelsokClient $matrikkelsokClient,
+		protected MatrikkelenhetClient $matrikkelenhetClient,
 		protected KommuneService $kommuneService
 	) {
 		$this->transcodeService = new TranscodeService();
 	}
 
 
-	public function getAddressByAddressId(int $addressId) : ?Adresse {
-		$result = $this->storeClient->getObject(['id' => BubbleId::getId($addressId, 'AdresseId')]);
-		$adresse = new Adresse($result->return);
-		return current($this->populate([$adresse]));
+	public function getAddressById(int $addressId) : ?Adresse {
+		return $this->createAddress($addressId);
 	}
 
 
@@ -47,31 +48,17 @@ class AdresseService extends AbstractService {
 	 */
 	public function getAddressesByAddressIds(array $addressIds) : array {
 		if(!count($addressIds)) return [];
-
-		$idObjects = BubbleId::getIds($addressIds, 'AdresseId');
-		$result = $this->storeClient->getObjects(['ids' => $idObjects]);
-		$addresses =[];
-		if(is_object($result->return->item)) $result->return->item = [$result->return->item];
-		foreach($result->return->item AS $item) {
-			$addresses[] = new Adresse($item);
+		$addresses = [];
+		foreach($addressIds AS $addressId) {
+			$address = $this->createAddress($addressId);
+			if($address) $addresses[] = $address;
 		}
-		return $this->populate($addresses);
+		return $addresses;
 	}
 
 
 	/**
-	 * @param Adresse[] $addresses
-	 * @return Adresse[]
-	 */
-	protected function populate(array $addresses) : array {
-		$addresses = $this->populateVeg($addresses);
-		$addresses = $this->populateMatrikkelenhet($addresses);
-		return $this->populatePostnummeromrade($addresses);
-		//return $this->populateKretser($addresses);
-	}
-
-
-	/**
+	 * @deprecated Use createAddress()
 	 * @param Adresse[] $addresses
 	 * @return Adresse[]
 	 */
@@ -90,6 +77,7 @@ class AdresseService extends AbstractService {
 
 
 	/**
+	 * @deprecated Use createAddress()
 	 * @param Adresse[] $addresses
 	 * @return Adresse[]
 	 */
@@ -108,6 +96,7 @@ class AdresseService extends AbstractService {
 
 
 	/**
+	 * @deprecated Use createAddress()
 	 * @param Adresse[] $addresses
 	 * @return Adresse[]
 	 */
@@ -124,40 +113,56 @@ class AdresseService extends AbstractService {
 	}
 
 
-	/**
-	 * @param Adresse[] $addresses
-	 * @return Adresse[]
-	 */
-	protected function populateKretser(array $addresses) {
-		// Make index and initialize $kretser
-		$kretsIdIndex = [];
-		foreach($addresses AS $address) {
-			foreach(Krets\Krets::KRETSTYPER AS $type) {
-				$property = lcfirst($type);
-				$address->$property = null;
-			}
-			foreach($address->kretsIds AS $kretsId) {
-				$kretsIdIndex[$kretsId][] = $address;
+	protected function createAddress(int $addressId) : ?Adresse {
+		$address = null;
+
+		$result = $this->adresseClient->findObjekterForAdresse(['adresseId' => BubbleId::getId($addressId, 'AdresseId')]);
+		$bubbles = $result->return->bubbleObjects->item;
+		if (is_object($bubbles)) $bubbles = [$bubbles];
+
+		// Create the Address itself
+		foreach ($bubbles as $key => $bubble) {
+			if ($addressId == $bubble->id->value) {
+				$address = new Adresse($bubble);
+				unset($bubbles[$key]);
 			}
 		}
+		if (!$address) return null;
 
-		// Collect kretser
-		$result = $this->storeClient->getObjects(['ids' => BubbleId::getIds(array_keys($kretsIdIndex), 'KretsId')]);
-		if(is_object($result->return->item)) $result->return->item = [$result->return->item];
-
-		// Instantiate krets objects
-		$kretser = [];
-		foreach($result->return->item AS $item) {
-			if($type = Krets\Krets::KRETSTYPER[$item->kretstypeKodeId->value] ?? false) {
-				$className = Krets::class . '\\' . $type;
-				$kretser[] = new $className($item);
+		// Populate
+		foreach ($bubbles as $bubble) {
+			if (isset($bubble->kretstypeKodeId)) {
+				switch($bubble->kretstypeKodeId->value) {
+					case '4097':
+						$address->postnummeromrade = new Krets\Postnummeromrade($bubble);
+						break;
+					case '4098':
+						$address->tettsted = new Krets\Tettsted($bubble);
+						break;
+					case '4099':
+						$address->kirkesokn = new Krets\Kirkesokn($bubble);
+						break;
+					case '4100':
+						$address->grunnkrets = new Krets\Grunnkrets($bubble);
+						break;
+					case '4101':
+						$address->stemmekrets = new Krets\Stemmekrets($bubble);
+						break;
+					case '4102':
+						$address->svalbardomrade = new Krets\Svalbardomrade($bubble);
+						break;
+					default:
+						// Kommunalkrets?
+						break;
+				}
 			}
+			elseif(isset($bubble->etasjeplanKodeId)) $address->addBruksenhet(new Bruksenhet($bubble));
+			elseif(isset($bubble->bruksnavn)) $address->matrikkelenhet = new Matrikkelenhet($bubble);
+			elseif($bubble->id->value == $address->vegId) $address->veg = new Veg($bubble);
+			elseif(isset($bubble->bygningsnummer)) {} // Must add bygning
+			else throw new InvalidArgumentException('Unknown bubble object type');
 		}
-
-		// Populate addresses using the index
-		ObjectKeyMatrix::populateObjectKeyMatrixWithFunctionCall($kretsIdIndex, 'addKrets', $kretser, 'id');
-
-		return $addresses;
+		return $address;
 	}
 
 
@@ -193,7 +198,6 @@ class AdresseService extends AbstractService {
 		if(!isset($result->return->item)) return [];
 
 		$addressIds = [];
-		$eiendomIds = [];
 		if(is_string($result->return->item)) $result->return->item = [$result->return->item];
 		foreach($result->return->item AS $item) {
 			$match = [];

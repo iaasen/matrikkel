@@ -32,4 +32,11 @@ class Matrikkelnummer extends AbstractEntityV2 {
 		$this->setPrimitiveInternal('int', 'kommuneId', $value);
 	}
 
+	public function getMatrikkelnummer() : string {
+		$matrikkelString = str_repeat('0', 4 - strlen($this->kommuneId)) . $this->kommuneId . '-' . $this->gardsnummer . '/' . $this->bruksnummer;
+		if($this->festenummer) $matrikkelString .= '/' . $this->festenummer;
+		if($this->seksjonsnummer) $matrikkelString .= '/' . $this->seksjonsnummer;
+		return $matrikkelString;
+	}
+
 }

@@ -6,6 +6,16 @@
 
 namespace Iaasen\Matrikkel\Entity;
 
+/**
+ * @property int $byggId
+ * @property int $etasjeplanKodeId
+ * @property int $etasjenummer
+ * @property int $lopenummer
+ * @property int $adresseId
+ * @property int $matrikkelenhetId
+ * @property int $bruksenhetstypeKodeId
+ * @property bool $byggSkjermingsverdig
+ */
 class Bruksenhet extends AbstractEntity {
 	protected int $byggId;
 	protected int $etasjeplanKodeId;
@@ -24,13 +34,30 @@ class Bruksenhet extends AbstractEntity {
 		4 => 'U', // Underetasje
 	];
 
+	const ETASJEPLAN_BESKRIVELSER = [
+		'' => '?',
+		'H' => 'Hovedetasje',
+		'K' => 'Kjelleretasje',
+		'L' => 'Loft',
+		'U' => 'Underetasje',
+	];
+
 	const BRUKSENHETSTYPE_KODER = [
 		0 => 'B', // Bolig
 		1 => 'I', // Ikke godkjent bolig
 		2 => 'F', // Fritidsbolig
 		3 => 'A', // Annet enn bolig
 		4 => 'U', // Unummerert bruksenhet
-		5 => 'X', //
+		5 => 'X', // Ukjent
+	];
+
+	const BRUKSENHETSTYPE_BESKRIVELSER = [
+		'B' => 'Bolig',
+		'I' => 'Ikke godkjent bolig',
+		'F' => 'Fritidsbolig',
+		'A' => 'Annet enn bolig',
+		'U' => 'Unummerert bruksenhet',
+		'X' => 'Ukjent',
 	];
 
 	public function setByggId(mixed $value) : void { $this->setValueObjectInternal('byggId', $value); }
@@ -41,6 +68,7 @@ class Bruksenhet extends AbstractEntity {
 
 
 	public function getBruksenhetsnummer() : string {
+		if($this->etasjeplanKodeId == 0) return 'Navnløs';
 		return
 			self::ETASJEPLAN_KODER[$this->etasjeplanKodeId] .
 			str_repeat('0', 2 - strlen($this->etasjenummer)) . $this->etasjenummer .

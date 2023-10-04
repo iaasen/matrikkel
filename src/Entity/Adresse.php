@@ -24,6 +24,7 @@ use Iaasen\Matrikkel\Entity\Krets\Tettsted;
  * @property Veg $veg
  * @property Matrikkelenhet $matrikkelenhet
  * @property Representasjonspunkt $representasjonspunkt
+ * @property Bruksenhet[] $bruksenheter
  * @property Postnummeromrade $postnummeromrade
  * @property Tettsted $tettsted
  * @property Kirkesokn $kirkesokn
@@ -64,7 +65,7 @@ class Adresse extends AbstractEntity {
 			$this->kretsIds = [];
 			foreach($value->item AS $item) $this->kretsIds[] = $item->value;
 		}
-		else $this->setArrayInternal('int', 'kretsIds', $value);
+		else $this->setArrayInternal('kretsIds', $value);
 	}
 
 

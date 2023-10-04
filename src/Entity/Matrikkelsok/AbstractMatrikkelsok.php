@@ -40,6 +40,7 @@ class AbstractMatrikkelsok extends AbstractEntityV2 {
 		if(in_array($name, self::SEARCH_RESULT_FIELD_NAMES)) {
 			parent::__set(strtolower($name), $value);
 		}
+		else parent::__set($name, $value);
 	}
 
 

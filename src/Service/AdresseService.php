@@ -117,6 +117,8 @@ class AdresseService extends AbstractService {
 		$address = null;
 
 		$result = $this->adresseClient->findObjekterForAdresse(['adresseId' => BubbleId::getId($addressId, 'AdresseId')]);
+		// TODO: Return null if the address id is wrong
+
 		$bubbles = $result->return->bubbleObjects->item;
 		if (is_object($bubbles)) $bubbles = [$bubbles];
 

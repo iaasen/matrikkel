@@ -117,6 +117,7 @@ class AdresseService extends AbstractService {
 		$address = null;
 
 		$result = $this->adresseClient->findObjekterForAdresse(['adresseId' => BubbleId::getId($addressId, 'AdresseId')]);
+		//dump($this->adresseClient->getLastResponse());
 		// TODO: Return null if the address id is wrong
 
 		$bubbles = $result->return->bubbleObjects->item;
@@ -159,10 +160,10 @@ class AdresseService extends AbstractService {
 				}
 			}
 			elseif(isset($bubble->etasjeplanKodeId)) $address->addBruksenhet(new Bruksenhet($bubble));
-			elseif(isset($bubble->bruksnavn)) $address->matrikkelenhet = new Matrikkelenhet($bubble);
+			elseif(isset($bubble->matrikkelnummer)) $address->matrikkelenhet = new Matrikkelenhet($bubble);
 			elseif($bubble->id->value == $address->vegId) $address->veg = new Veg($bubble);
-			elseif(isset($bubble->bygningsnummer)) {} // Must add bygning
-			else throw new InvalidArgumentException('Unknown bubble object type');
+			//elseif(isset($bubble->bygningsnummer)) {} // Must add bygning
+			//else throw new InvalidArgumentException('Unknown bubble object type');
 		}
 		return $address;
 	}

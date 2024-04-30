@@ -34,6 +34,9 @@ services:
     Iaasen\Matrikkel\Client\AdresseClient:
         factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
         arguments: [ Iaasen\Matrikkel\Client\AdresseClient ]
+    Iaasen\Matrikkel\Client\BruksenhetClient:
+        factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
+        arguments: [ Iaasen\Matrikkel\Client\BruksenhetClient ]
     Iaasen\Matrikkel\Client\KommuneClient:
         factory: [ Iaasen\Matrikkel\Client\SoapClientFactory, create ]
         arguments: [ Iaasen\Matrikkel\Client\KommuneClient ]

@@ -16,6 +16,7 @@ class BubbleId {
 	const NAMESPACE_BASE = 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/';
 	const NAMESPACES = [
 		'AdresseId' => self::NAMESPACE_BASE . 'adresse',
+		'BruksenhetId' => self::NAMESPACE_BASE . 'bygning',
 		'KodelisteId' => self::NAMESPACE_BASE . 'kodeliste',
 		'KommuneId' => self::NAMESPACE_BASE . 'kommune',
 		'KommunevapenId' => self::NAMESPACE_BASE . 'kommune',

@@ -11,6 +11,12 @@ return [
 	'laminas-cli' => [
 		'commands' => [
 			'matrikkel:adresse' => \Iaasen\Matrikkel\Console\AdresseCommand::class,
+			'matrikkel:bruksenhet' => \Iaasen\Matrikkel\Console\BruksenhetCommand::class,
+			'matrikkel:kodeliste' => \Iaasen\Matrikkel\Console\KodelisteCommand::class,
+			'matrikkel:kommune' => \Iaasen\MatrikkelApi\Console\KommuneCommand::class,
+			'matrikkel:matrikkelenhet' => \Iaasen\Matrikkel\Console\MatrikkelenhetCommand::class,
+			'matrikkel:ping' => \Iaasen\Matrikkel\Console\PingCommand::class,
+			'matrikkel:sok' => \Iaasen\Matrikkel\Console\MatrikkelsokCommand::class,
 		],
 	],
 	'service_manager' => [

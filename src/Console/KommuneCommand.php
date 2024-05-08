@@ -4,10 +4,10 @@
  * Date: 22.09.2023
  */
 
-namespace Iaasen\MatrikkelApi\Console;
+namespace Iaasen\Matrikkel\Console;
 
 use Iaasen\Debug\Timer;
-use Iaasen\MatrikkelApi\Service\KommuneService;
+use Iaasen\Matrikkel\Service\KommuneService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

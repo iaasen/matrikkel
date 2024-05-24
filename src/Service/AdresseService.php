@@ -116,7 +116,15 @@ class AdresseService extends AbstractService {
 	protected function createAddress(int $addressId) : ?Adresse {
 		$address = null;
 
-		$result = $this->adresseClient->findObjekterForAdresse(['adresseId' => BubbleId::getId($addressId, 'AdresseId')]);
+		try {
+			$result = $this->adresseClient->findObjekterForAdresse(['adresseId' => BubbleId::getId($addressId, 'AdresseId')]);
+		}
+		catch (\Exception $e) {
+			if(str_contains($e->getMessage(), 'AdresseId')) {
+				return null;
+			}
+			else throw $e;
+		}
 		//dump($this->adresseClient->getLastResponse());
 		// TODO: Return null if the address id is wrong
 

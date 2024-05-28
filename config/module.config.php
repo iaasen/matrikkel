@@ -11,6 +11,7 @@ return [
 	'laminas-cli' => [
 		'commands' => [
 			'matrikkel:adresse' => \Iaasen\Matrikkel\Console\AdresseCommand::class,
+			'matrikkel:adresse-import' => \Iaasen\Matrikkel\Console\AddressImportCommand::class,
 			'matrikkel:bruksenhet' => \Iaasen\Matrikkel\Console\BruksenhetCommand::class,
 			'matrikkel:kodeliste' => \Iaasen\Matrikkel\Console\KodelisteCommand::class,
 			'matrikkel:kommune' => \Iaasen\Matrikkel\Console\KommuneCommand::class,

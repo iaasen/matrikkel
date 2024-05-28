@@ -12,6 +12,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-soap": "*",
+        "ext-zip": "*",
         "iaasen/stdlib": "dev-master",
         "laminas/laminas-soap": "^2",
         "nyholm/psr7": "^1.8",

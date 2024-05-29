@@ -15,6 +15,7 @@ use Iaasen\Model\AbstractEntityV2;
  * @property string $tilhoerighet
  * @property string $kommunenr
  * @property string $kommunenavn
+ * @property int $epsg;
  * @property float $latitude
  * @property float $longitude
  * @property string $fylkesnr
@@ -32,6 +33,7 @@ class AbstractMatrikkelsok extends AbstractEntityV2 {
 
 	// From MatrikkelApi - UTM zone 32 (25832)
 	// From CSV import - UTM zone 33 (25833)
+	protected int $epsg = 25832;
 	protected float $latitude; // North
 	protected float $longitude; // East
 

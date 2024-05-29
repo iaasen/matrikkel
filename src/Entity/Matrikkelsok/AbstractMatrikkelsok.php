@@ -29,8 +29,12 @@ class AbstractMatrikkelsok extends AbstractEntityV2 {
 	protected string $tilhoerighet;
 	protected string $kommunenr;
 	protected string $kommunenavn;
-	protected float $latitude;
-	protected float $longitude;
+
+	// From MatrikkelApi - UTM zone 32 (25832)
+	// From CSV import - UTM zone 33 (25833)
+	protected float $latitude; // North
+	protected float $longitude; // East
+
 	protected string $fylkesnr;
 	protected string $fylkesnavn;
 	protected string $objekttype;

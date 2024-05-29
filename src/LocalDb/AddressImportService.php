@@ -6,7 +6,9 @@
 
 namespace Iaasen\Matrikkel\LocalDb;
 
+use Iaasen\DateTime;
 use Iaasen\Debug\Timer;
+use Iaasen\Matrikkel\Entity\Matrikkelsok\AbstractMatrikkelsok;
 use Laminas\Db\Adapter\Adapter;
 use SplFileObject;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -14,23 +16,47 @@ use ZipArchive;
 
 class AddressImportService {
 	// All of Norway
-	const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV.zip';
-	const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV';
+	//const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV.zip';
+	//const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV';
 
 	// Trøndelag
-	//const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV.zip';
-	//const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV';
+	const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV.zip';
+	const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV';
 
 	// Same for all
 	const CACHE_FOLDER = 'data/cache';
 	const ZIP_FILE = self::CACHE_FOLDER . '/matrikkel-address-import.zip';
 	const CSV_FILE = self::EXTRACT_FOLDER . '/matrikkelenAdresse.csv';
 
-	// Only these columns will be imported
+	/**
+	 * Only these columns will be imported
+	 * Comments show field names in Matrikkelsok entity
+	 * @see AbstractMatrikkelsok
+	 *
+	 * Missing fields:
+	 * tittel, fylkesnr, fylkesnavn, kilde
+	 */
 	const ADDRESS_COLUMNS = [
-		'adresseId',
-		'kommunenummer',
-		'kommunenavn',
+		'adresseId', // id
+		'kommunenummer', // kommunenr
+		'kommunenavn', // kommunenavn
+		'adressetype', // objekttype
+		'adressekode', // adressekode
+		'adressenavn', // adressenavn
+		'nummer', // husnr
+		'bokstav', // bokstav
+		'gardsnummer', // matrikkelnr
+		'bruksnummer', // matrikkelnr
+		'festenummer', // matrikkelnr
+		'undernummer', // matrikkelnr
+		'adresseTekst', // navn
+		'Nord', // latitude
+		'Øst', // longitude
+		'postnummer', // postnr
+		'poststed', // poststed
+		'grunnkretsnavn', // Part of "tilhoerighet"
+		'soknenavn', // Part of "tilhoerighet"
+		'tettstednavn', // Part of "tilhoerighet"
 	];
 	const TABLE_NAME = 'matrikkel_addresses';
 
@@ -57,10 +83,8 @@ class AddressImportService {
 		$fileObject = $this->openFile();
 		$io->writeln('Success');
 
-		$io->write('Collect column names: ');
-		$this->setColumnNames($fileObject);
-		$io->writeln(implode(', ', $this->columnNames));
-
+		// This command will rewind the file to first row.
+		// The next fgetcsv-call will fetch the second line and skip the column names.
 		$fileLineCount = $this->countFileLines($fileObject);
 		$io->writeln('The file has ' . $fileLineCount . ' lines');
 
@@ -82,7 +106,10 @@ class AddressImportService {
 		$progressBar->finish();
 		$this->closeFile($fileObject);
 
+		$oldRows = $this->deleteOldRows();
 		$io->writeln('');
+		$io->writeln('Deleted ' . $oldRows . ' old rows');
+
 		$io->writeln($count . ' road addresses imported');
 		$io->writeln('The address table now contains ' . $this->countDbAddressRows() . ' addresses');
 		$io->info('Completed in ' . round(Timer::getElapsed(), 3) . ' seconds');
@@ -114,20 +141,39 @@ class AddressImportService {
 	}
 
 
-	protected function setColumnNames(SplFileObject $fileObject) : void {
-		$columnNames = $fileObject->fgetcsv(separator:';');
-		$columnNames[0] = ltrim($columnNames[0], "\u{FEFF}");
-		$this->columnNames = array_intersect($columnNames, self::ADDRESS_COLUMNS);
-	}
-
-
 	public function insertRow(array $row) : void {
-		$row = array_intersect_key($row, $this->columnNames);
-		$this->addressRows[] = $row;
+		// Fields from the matrikkel-sok that doesn't exist in this csv import:
+	 	// tittel, fylkesnr, fylkesnavn, kilde
+
+		$this->addressRows[] = [
+			'adresseId' => (int) $row[32],
+			'kommunenummer' => (int) $row[1],
+			'kommunenavn' => $row[2],
+			'adressetype' => $row[3],
+			'adressekode' => $row[6],
+			'adressenavn' => $row[7],
+			'nummer' => (int) $row[8],
+			'bokstav' => $row[9],
+			'gardsnummer' => (int) $row[10],
+			'bruksnummer' => (int) $row[11],
+			'festenummer' => (int) $row[12],
+			'undernummer' => (int) $row[13],
+			'adresseTekst' => $row[14],
+			'EPSG-kode' => (int) $row[16],
+			'Nord' => (float) $row[17],
+			'Øst' => (float) $row[18],
+			'postnummer' => (int) $row[19],
+			'poststed' => $row[20],
+			'grunnkretsnavn' => $row[22],
+			'soknenavn' => $row[24],
+			'tettstednavn' => $row[27],
+		];
 	}
 
 
 	public function flush() : void {
+		if(!count($this->addressRows)) return;
+
 		$sql = $this->getStartInsert();
 		$valueRows = [];
 		foreach($this->addressRows as $addressRow) {
@@ -144,10 +190,20 @@ class AddressImportService {
 
 
 	public function getStartInsert() : string {
-		$columnsString = array_map(function ($column) { return '`' . $column . '`'; }, $this->columnNames);
+		$columnNames = array_keys(current($this->addressRows));
+		$columnsString = array_map(function ($column) { return '`' . $column . '`'; }, $columnNames);
 		$columnsString = implode(',', $columnsString);
 		$columnsString = '(' . $columnsString . ')';
 		return 'REPLACE INTO ' . self::TABLE_NAME . ' ' . $columnsString . PHP_EOL . 'VALUES' . PHP_EOL;
+	}
+
+
+	public function deleteOldRows() : int {
+		$date = new DateTime();
+		$date->modify('-3 hour'); // Go back 3 hours to get before UTC in case of timezone errors
+		$sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE timestamp_created < "' . $date->formatMysql() . '";';
+		$result = $this->dbAdapter->query($sql)->execute();
+		return $result->getAffectedRows();
 	}
 
 

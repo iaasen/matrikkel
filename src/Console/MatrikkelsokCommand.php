@@ -10,6 +10,7 @@ use Iaasen\Debug\Timer;
 use Iaasen\Matrikkel\Entity\Matrikkelsok\Eiendom;
 use Iaasen\Matrikkel\Entity\Matrikkelsok\Veg;
 use Iaasen\Matrikkel\Entity\Matrikkelsok\Vegadresse;
+use Iaasen\Matrikkel\LocalDb\AdresseSokService;
 use Iaasen\Matrikkel\Service\MatrikkelsokService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,6 +23,7 @@ class MatrikkelsokCommand extends AbstractCommand {
 
 	public function __construct(
 		protected MatrikkelsokService $matrikkelsokService,
+		protected AdresseSokService $adresseSokService,
 	) {
 		parent::__construct('matrikkel:sok');
 	}
@@ -32,7 +34,18 @@ class MatrikkelsokCommand extends AbstractCommand {
 		Timer::setStart();
 
 		$search = $input->getArgument('search');
-		$addresses = $this->matrikkelsokService->searchAddresses($search);
+		$source = $input->getOption('source');
+		if(!in_array($source, ['api', 'csv'])) {
+			$this->io->error('Valid source options: api, csv');
+			return 1;
+		}
+
+		if($source == 'api') {
+			$addresses = $this->matrikkelsokService->searchAddresses($search);
+		}
+		else { // csv
+			$addresses = $this->adresseSokService->search('eggevegen');
+		}
 
 		// Veg
 		$rows = [];
@@ -69,6 +82,13 @@ class MatrikkelsokCommand extends AbstractCommand {
 
 	public function configure() : void {
 		$this->addArgument('search', InputArgument::REQUIRED);
+		$this->addOption(
+			'source',
+			's',
+			InputArgument::OPTIONAL,
+			'"api" = MatrikkelApi, "csv" = downloaded CSV-file',
+			'api'
+		);
 	}
 
 }

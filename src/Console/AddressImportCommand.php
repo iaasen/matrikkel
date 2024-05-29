@@ -6,7 +6,7 @@
 
 namespace Iaasen\Matrikkel\Console;
 
-use Iaasen\Matrikkel\LocalDb\AddressImportService;
+use Iaasen\Matrikkel\LocalDb\AdresseImportService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class AddressImportCommand extends AbstractCommand {
 
 	public function __construct(
-		protected AddressImportService $addressImportService,
+		protected AdresseImportService $addressImportService,
 	) {
 		parent::__construct();
 	}

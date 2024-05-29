@@ -8,7 +8,6 @@ namespace Iaasen\Matrikkel\LocalDb;
 
 use Iaasen\DateTime;
 use Iaasen\Debug\Timer;
-use Iaasen\Matrikkel\Entity\Matrikkelsok\AbstractMatrikkelsok;
 use Laminas\Db\Adapter\Adapter;
 use SplFileObject;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -27,41 +26,9 @@ class AdresseImportService {
 	const CACHE_FOLDER = 'data/cache';
 	const ZIP_FILE = self::CACHE_FOLDER . '/matrikkel-address-import.zip';
 	const CSV_FILE = self::EXTRACT_FOLDER . '/matrikkelenAdresse.csv';
-
-	/**
-	 * Only these columns will be imported
-	 * Comments show field names in Matrikkelsok entity
-	 * @see AbstractMatrikkelsok
-	 *
-	 * Missing fields:
-	 * tittel, fylkesnr, fylkesnavn, kilde
-	 */
-	const ADDRESS_COLUMNS = [
-		'adresseId', // id
-		'kommunenummer', // kommunenr
-		'kommunenavn', // kommunenavn
-		'adressetype', // objekttype
-		'adressekode', // adressekode
-		'adressenavn', // adressenavn
-		'nummer', // husnr
-		'bokstav', // bokstav
-		'gardsnummer', // matrikkelnr
-		'bruksnummer', // matrikkelnr
-		'festenummer', // matrikkelnr
-		'undernummer', // matrikkelnr
-		'adresseTekst', // navn
-		'Nord', // latitude
-		'Øst', // longitude
-		'postnummer', // postnr
-		'poststed', // poststed
-		'grunnkretsnavn', // Part of "tilhoerighet"
-		'soknenavn', // Part of "tilhoerighet"
-		'tettstednavn', // Part of "tilhoerighet"
-	];
 	const TABLE_NAME = 'matrikkel_addresses';
 
 	// Temp storage
-	protected array $columnNames;
 	protected array $addressRows = [];
 
 
@@ -143,7 +110,7 @@ class AdresseImportService {
 
 	public function insertRow(array $row) : void {
 		// Fields from the matrikkel-sok that doesn't exist in this csv import:
-	 	// tittel, fylkesnr, fylkesnavn, kilde
+	 	// tittel, fylkesnavn, kilde
 
 		$this->addressRows[] = [
 			'adresseId' => (int) $row[32],
@@ -167,6 +134,8 @@ class AdresseImportService {
 			'grunnkretsnavn' => $row[22],
 			'soknenavn' => $row[24],
 			'tettstednavn' => $row[27],
+			'fylkesnummer' => floor((int) $row[1] / 100),
+			'search_context' => $row[8] . $row[9] . ' ' . $row[19] . ' ' . $row[20] . ' ' . $row[27] . ' ' . $row[2],
 		];
 	}
 

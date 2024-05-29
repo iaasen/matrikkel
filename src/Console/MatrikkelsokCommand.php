@@ -33,7 +33,7 @@ class MatrikkelsokCommand extends AbstractCommand {
 		$this->io->title('MatrikkelAPI Matrikkelsøk');
 		Timer::setStart();
 
-		$search = $input->getArgument('search');
+		$search = implode(' ', $input->getArgument('search'));
 		$source = $input->getOption('source');
 		if(!in_array($source, ['api', 'csv'])) {
 			$this->io->error('Valid source options: api, csv');
@@ -44,7 +44,7 @@ class MatrikkelsokCommand extends AbstractCommand {
 			$addresses = $this->matrikkelsokService->searchAddresses($search);
 		}
 		else { // csv
-			$addresses = $this->adresseSokService->search('eggevegen');
+			$addresses = $this->adresseSokService->search($search);
 		}
 
 		// Veg
@@ -81,7 +81,7 @@ class MatrikkelsokCommand extends AbstractCommand {
 
 
 	public function configure() : void {
-		$this->addArgument('search', InputArgument::REQUIRED);
+		$this->addArgument('search', InputArgument::REQUIRED + InputArgument::IS_ARRAY);
 		$this->addOption(
 			'source',
 			's',

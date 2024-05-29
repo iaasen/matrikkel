@@ -21,10 +21,66 @@ class AdresseSokService {
 	 * @return Vegadresse[]
 	 */
 	public function search(string $search): array {
-		$sql = 'SELECT * FROM ' . AdresseImportService::TABLE_NAME . " WHERE adresseTekst LIKE CONCAT('%', ?, '%') LIMIT 20;";
-		$request = $this->dbAdapter->query($sql);
+		if(!strlen($search)) return [];
 
-		$result = $request->execute([$search]);
+		// Prepare search fields
+		$searchContext = preg_split("/[, ]/", $search, -1, PREG_SPLIT_NO_EMPTY);
+		$streetName = null;
+		$postalCode = null;
+
+		$contextCount = count($searchContext);
+		for($i=0; $i < $contextCount; $i++) {
+			$field = array_shift($searchContext);
+			if(preg_match('/\d{4}/', $field)) {
+				$postalCode = $field;
+			}
+			else array_push($searchContext, $field);
+		}
+		if(count($searchContext)) $streetName = array_shift($searchContext);
+
+		// Prepare where search
+		$where = [];
+		$parameters = [];
+		if($streetName) {
+			$where[] = "adressenavn LIKE CONCAT(?, '%')";
+			$parameters[] = $streetName;
+		}
+		if($postalCode) {
+			$where[] = "postnummer = ?";
+			$parameters[] = $postalCode;
+		}
+		foreach($searchContext AS $context) {
+			$where[] = "search_context LIKE CONCAT('%', ?, '%')";
+			$parameters[] = $context;
+		}
+
+		// Create the query
+		$table = AdresseImportService::TABLE_NAME;
+		$sql = <<<EOT
+		SELECT *
+		FROM $table
+		EOT;
+
+		$i = 0;
+		foreach($where AS $row) {
+			$sql .= PHP_EOL . ($i == 0 ? 'WHERE ' : 'AND ') . $row;
+			$i++;
+		}
+
+		$sql .= PHP_EOL . <<<EOT
+		ORDER BY
+			CASE
+				WHEN fylkesnummer = 50 THEN 0
+				ELSE 1
+			END,
+			poststed,
+			adresseTekst
+		LIMIT 20;
+		EOT;
+
+		// Execute the query
+		$request = $this->dbAdapter->query($sql);
+		$result = $request->execute($parameters);
 		$addresses = [];
 		foreach ($result as $row) {
 			$addresses[] = self::createMatrikkelSokObject($row);

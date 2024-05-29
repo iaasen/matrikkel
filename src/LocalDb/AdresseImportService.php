@@ -14,14 +14,14 @@ use SplFileObject;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use ZipArchive;
 
-class AddressImportService {
+class AdresseImportService {
 	// All of Norway
-	//const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV.zip';
-	//const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV';
+	const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV.zip';
+	const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV';
 
 	// Trøndelag
-	const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV.zip';
-	const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV';
+	//const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV.zip';
+	//const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV';
 
 	// Same for all
 	const CACHE_FOLDER = 'data/cache';
@@ -159,9 +159,9 @@ class AddressImportService {
 			'festenummer' => (int) $row[12],
 			'undernummer' => (int) $row[13],
 			'adresseTekst' => $row[14],
-			'EPSG-kode' => (int) $row[16],
-			'Nord' => (float) $row[17],
-			'Øst' => (float) $row[18],
+			'epsg' => (int) $row[16],
+			'nord' => (float) $row[17],
+			'øst' => (float) $row[18],
 			'postnummer' => (int) $row[19],
 			'poststed' => $row[20],
 			'grunnkretsnavn' => $row[22],

@@ -74,7 +74,9 @@ class AdresseSokService {
 				ELSE 1
 			END,
 			poststed,
-			adresseTekst
+			adressenavn,
+			nummer,
+			bokstav
 		LIMIT 20;
 		EOT;
 

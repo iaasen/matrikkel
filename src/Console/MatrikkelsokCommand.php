@@ -35,8 +35,8 @@ class MatrikkelsokCommand extends AbstractCommand {
 
 		$search = implode(' ', $input->getArgument('search'));
 		$source = $input->getOption('source');
-		if(!in_array($source, ['api', 'csv'])) {
-			$this->io->error('Valid source options: api, csv');
+		if(!in_array($source, ['api', 'db'])) {
+			$this->io->error('Valid source options: api, db');
 			return 1;
 		}
 
@@ -86,7 +86,7 @@ class MatrikkelsokCommand extends AbstractCommand {
 			'source',
 			's',
 			InputArgument::OPTIONAL,
-			'"api" = MatrikkelApi, "csv" = downloaded CSV-file',
+			'"api" = MatrikkelApi, "db" = Local database',
 			'api'
 		);
 	}

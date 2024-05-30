@@ -28,14 +28,18 @@ class AdresseSokService {
 		$streetName = null;
 		$postalCode = null;
 
-		$contextCount = count($searchContext);
-		for($i=0; $i < $contextCount; $i++) {
-			$field = array_shift($searchContext);
-			if(preg_match('/\d{4}/', $field)) {
-				$postalCode = $field;
-			}
-			else array_push($searchContext, $field);
+		if(preg_match('/\d{4}/', reset($searchContext))) {
+			$postalCode = reset($searchContext);
+			array_shift($searchContext);
 		}
+//		$contextCount = count($searchContext);
+//		for($i=0; $i < $contextCount; $i++) {
+//			$field = array_shift($searchContext);
+//			if(preg_match('/\d{4}/', $field)) {
+//				$postalCode = $field;
+//			}
+//			else array_push($searchContext, $field);
+//		}
 		if(count($searchContext)) $streetName = array_shift($searchContext);
 
 		// Prepare where search
@@ -73,10 +77,10 @@ class AdresseSokService {
 				WHEN fylkesnummer = 50 THEN 0
 				ELSE 1
 			END,
-			poststed,
 			adressenavn,
 			nummer,
-			bokstav
+			bokstav,
+			poststed
 		LIMIT 20;
 		EOT;
 

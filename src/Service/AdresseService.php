@@ -139,6 +139,7 @@ class AdresseService extends AbstractService {
 			}
 		}
 		if (!$address) return null;
+		$address->bruksenheter = [];
 
 		// Populate
 		foreach ($bubbles as $bubble) {

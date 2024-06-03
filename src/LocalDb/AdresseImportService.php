@@ -47,7 +47,7 @@ class AdresseImportService {
 		}
 
 		$io->write('Extract the CSV file from the ZIP file: ');
-		$fileObject = $this->openFile();
+		$fileObject = $this->openImportFile();
 		$io->writeln('Success');
 
 		// This command will rewind the file to first row.
@@ -96,7 +96,7 @@ class AdresseImportService {
 	}
 
 
-	protected function openFile() : SplFileObject {
+	protected function openImportFile() : SplFileObject {
 		$fileObject = new SplFileObject(self::CSV_FILE, 'r');
 		$fileObject->setFlags(SplFileObject::READ_AHEAD | SplFileObject::SKIP_EMPTY);
 		return $fileObject;

@@ -108,6 +108,11 @@ class AdresseImportService {
 	}
 
 
+	protected function deleteImportFile() : void {
+		unlink(self::CSV_FILE);
+	}
+
+
 	public function insertRow(array $row) : void {
 		// Fields from the matrikkel-sok that doesn't exist in this csv import:
 	 	// tittel, fylkesnavn, kilde

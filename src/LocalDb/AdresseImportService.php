@@ -140,7 +140,7 @@ class AdresseImportService {
 			'soknenavn' => $row[24],
 			'tettstednavn' => $row[27],
 			'fylkesnummer' => floor((int) $row[1] / 100),
-			'search_context' => $row[7] . ' ' . $row[8] . $row[9] . ' ' . $row[19] . ' ' . $row[20] . ' ' . $row[27] . ' ' . $row[2],
+			'search_context' => $row[7] . ' ' . $row[8] . $row[9] . ' ' . $row[20] . ' ' . $row[27] . ' ' . $row[2],
 		];
 	}
 

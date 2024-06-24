@@ -6,6 +6,7 @@
 
 namespace Iaasen\Matrikkel\LocalDb;
 
+use Iaasen\DateTime;
 use Iaasen\Matrikkel\Entity\Matrikkelsok\Vegadresse;
 use Laminas\Db\Adapter\Adapter;
 
@@ -125,6 +126,20 @@ class AdresseSokService {
 			'postnr' => $row['postnummer'],
 			'poststed' => $row['poststed'],
 		]);
+	}
+
+
+	public function getLastDbUpdate() : ?DateTime {
+		$table = AdresseImportService::TABLE_NAME;
+		$sql = "
+			SELECT timestamp_created
+			FROM $table
+			ORDER BY timestamp_created ASC
+			LIMIT 1;
+		";
+		$result = $this->dbAdapter->query($sql)->execute();
+		if(!$result->count()) return null;
+		return new DateTime($result->current()['timestamp_created']);
 	}
 
 }

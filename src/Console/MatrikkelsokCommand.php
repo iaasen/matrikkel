@@ -87,7 +87,7 @@ class MatrikkelsokCommand extends AbstractCommand {
 			's',
 			InputArgument::OPTIONAL,
 			'"api" = MatrikkelApi, "db" = Local database',
-			'api'
+			'db'
 		);
 	}
 

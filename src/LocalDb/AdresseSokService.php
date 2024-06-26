@@ -41,7 +41,10 @@ class AdresseSokService {
 //			}
 //			else array_push($searchContext, $field);
 //		}
-		if(count($searchContext)) $streetName = array_shift($searchContext);
+		if(count($searchContext)) {
+			$streetName = array_shift($searchContext);
+			$streetName = str_replace(['veg', 'vei'], 've_', $streetName);
+		}
 
 		// Prepare where search
 		$where = [];

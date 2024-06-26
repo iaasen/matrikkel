@@ -58,6 +58,7 @@ class AdresseSokService {
 			$parameters[] = $postalCode;
 		}
 		foreach($searchContext AS $context) {
+			$context = str_replace(['veg', 'vei'], 've_', $context);
 			$where[] = "search_context LIKE CONCAT('%', ?, '%')";
 			$parameters[] = $context;
 		}

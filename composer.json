@@ -13,7 +13,6 @@
         "ext-iconv": "*",
         "ext-zip": "*",
         "iaasen/stdlib": "dev-master",
-        "laminas/laminas-soap": "^2",
         "nyholm/psr7": "^1.8",
         "phpro/soap-client": "^2.4",
         "symfony/console": "6.3.*",
@@ -25,7 +24,7 @@
         "symfony/yaml": "6.3.*"
     },
     "suggest": {
-        "ext-soap": "Matrikkel in api-mode requires SOAP PHP extension"
+        "laminas/laminas-soap": "Matrikkel in api-mode requires soap"
     },
     "config": {
         "allow-plugins": {

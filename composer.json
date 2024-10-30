@@ -11,7 +11,6 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "ext-soap": "*",
         "ext-zip": "*",
         "iaasen/stdlib": "dev-master",
         "laminas/laminas-soap": "^2",
@@ -24,6 +23,9 @@
         "symfony/http-client": "^6.3",
         "symfony/runtime": "6.3.*",
         "symfony/yaml": "6.3.*"
+    },
+    "suggest": {
+        "ext-soap": "Matrikkel in api-mode requires SOAP PHP extension",
     },
     "config": {
         "allow-plugins": {

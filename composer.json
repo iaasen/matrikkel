@@ -25,7 +25,7 @@
         "symfony/yaml": "6.3.*"
     },
     "suggest": {
-        "ext-soap": "Matrikkel in api-mode requires SOAP PHP extension",
+        "ext-soap": "Matrikkel in api-mode requires SOAP PHP extension"
     },
     "config": {
         "allow-plugins": {

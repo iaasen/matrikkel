@@ -15,7 +15,7 @@
         "iaasen/stdlib": "dev-master",
         "nyholm/psr7": "^1.8",
         "phpro/soap-client": "^2.4",
-        "symfony/console": "6.3.*",
+        "symfony/console": "^6|^7",
         "symfony/dotenv": "6.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.3.*",

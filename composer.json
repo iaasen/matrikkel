@@ -8,20 +8,20 @@
         "iaasen/*": "source"
     },
     "require": {
-        "php": ">=8.1",
+        "php": "^8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-zip": "*",
         "iaasen/stdlib": "dev-master",
         "nyholm/psr7": "^1.8",
-        "phpro/soap-client": "^2.4",
-        "symfony/console": "^6|^7",
-        "symfony/dotenv": "6.3.*",
+        "phpro/soap-client": "^3",
+        "symfony/console": "^7",
+        "symfony/dotenv": "^7",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "6.3.*",
-        "symfony/http-client": "^6.3",
-        "symfony/runtime": "6.3.*",
-        "symfony/yaml": "6.3.*"
+        "symfony/framework-bundle": "^7",
+        "symfony/http-client": "^7",
+        "symfony/runtime": "^7",
+        "symfony/yaml": "^7"
     },
     "suggest": {
         "laminas/laminas-soap": "Matrikkel in api-mode requires soap"

@@ -24,7 +24,7 @@
     },
     "suggest": {
         "laminas/laminas-soap": "Matrikkel in api-mode requires soap",
-        "phpro/soap-client": "I don't think this one is in use. laminas-soap is in use",
+        "phpro/soap-client": "I don't think this one is in use. laminas-soap is in use"
     },
     "config": {
         "allow-plugins": {

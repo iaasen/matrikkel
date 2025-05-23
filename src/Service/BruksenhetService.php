@@ -33,11 +33,65 @@ class BruksenhetService extends AbstractService {
 	 */
 	public function getBruksenheterByAdresseId(int $addressId) : array {
 		$result = $this->bruksenhetClient->findBruksenheterForAdresse(['adresseId' => BubbleId::getId($addressId, 'AdresseId')]);
-		$bruksenheter = [];
-		foreach($result->return->item AS $item) {
-			$bruksenheter[] = $this->getBruksenhetById($item->value);
-		}
-		return $bruksenheter;
+
+        $bruksenhetIds = [];
+
+        // Empty result
+        if(!isset($result->return->item)) return [];
+
+        // Single result
+        if(is_object($result->return->item)) {
+            $bruksenhetIds[] = $result->return->item->value;
+        }
+
+        // Multiple results
+        if(is_array($result->return->item)) {
+            foreach($result->return->item AS $row) {
+                $bruksenhetIds[] = $row->value;
+            }
+        }
+
+        // Collect the data
+        $bruksenheter = [];
+        foreach($bruksenhetIds AS $id) {
+            $bruksenheter[] = $this->getBruksenhetById($id);
+        }
+
+        return $bruksenheter;
 	}
+
+    /**
+     * @param array $addressIds
+     * @return array
+     */
+    public function getBruksenheterByAdresseIds(array $addressIds): array
+    {
+        $bubbleIds = [];
+        foreach($addressIds AS $addressId) {
+            $bubbleIds[] = BubbleId::getId($addressId, 'AdresseId');
+        }
+        $result = $this->bruksenhetClient->findBruksenheterForAdresser(['adresseIds' => $bubbleIds]);
+
+        // Empty result
+        if(!isset($result->return->entry)) return [];
+
+        // Make a simple result array
+        $response = [];
+        $rowEntries = is_object($result->return->entry) ? [$result->return->entry] : $result->return->entry;
+
+        foreach($rowEntries as $addressRow) {
+            $entry = [
+                'adresseId' => $addressRow->key->value,
+                'bruksenheter' => [],
+            ];
+            $bruksenhetEntries = is_object($addressRow->value->item) ? [$addressRow->value->item] : $addressRow->value->item;
+            foreach($bruksenhetEntries AS $bruksenhetRow) {
+                $entry['bruksenheter'][] = $this->getBruksenhetById(is_int($bruksenhetRow) ? $bruksenhetRow : $bruksenhetRow->value);
+            }
+            $response[] = $entry;
+        }
+
+        return $response;
+    }
 
 }

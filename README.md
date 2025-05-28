@@ -13,7 +13,7 @@ The URL for downloading the addreses is stored in AddressImportService::ADDRESS_
 A database table names matrikkel_addresses must be created in the default database:
 
 ```
-CREATE TABLE `matrikkel_addresses` (
+CREATE TABLE `matrikkel_adresser` (
   `adresseId` bigint(11) UNSIGNED NOT NULL,
   `fylkesnummer` tinyint(2) UNSIGNED NOT NULL,
   `kommunenummer` smallint(11) UNSIGNED NOT NULL,
@@ -26,6 +26,7 @@ CREATE TABLE `matrikkel_addresses` (
   `gardsnummer` smallint(6) UNSIGNED NOT NULL,
   `bruksnummer` smallint(6) UNSIGNED NOT NULL,
   `festenummer` smallint(6) UNSIGNED DEFAULT NULL,
+  `seksjonsnummer` smallint(6) UNSIGNED DEFAULT NULL,
   `undernummer` smallint(6) UNSIGNED DEFAULT NULL,
   `adresseTekst` varchar(255) NOT NULL,
   `epsg` smallint(6) UNSIGNED NOT NULL,
@@ -40,12 +41,22 @@ CREATE TABLE `matrikkel_addresses` (
   `timestamp_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE `matrikkel_addresses`
+ALTER TABLE `matrikkel_adresser`
   ADD PRIMARY KEY (`adresseId`),
   ADD KEY `fylkesnummer` (`fylkesnummer`),
   ADD KEY `adressenavn` (`adressenavn`),
   ADD KEY `postnummer` (`postnummer`),
   ADD KEY `search_context` (`search_context`);
+
+CREATE TABLE `matrikkel_bruksenheter` (
+  `adresseId` bigint(11) NOT NULL,
+  `bruksenhet` varchar(5) NOT NULL,
+  `timestamp_created` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+ALTER TABLE `matrikkel_bruksenheter`
+  ADD PRIMARY KEY (`adresseId`,`bruksenhet`);
+
 COMMIT;
 ```
 

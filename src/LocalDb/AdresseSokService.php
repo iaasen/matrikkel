@@ -11,6 +11,7 @@ use Iaasen\Matrikkel\Entity\Matrikkelsok\Vegadresse;
 use Laminas\Db\Adapter\Adapter;
 
 class AdresseSokService {
+    protected string $tableName = 'matrikkel_adresser';
 
 	public function __construct(
 		protected Adapter $dbAdapter
@@ -64,7 +65,7 @@ class AdresseSokService {
 		}
 
 		// Create the query
-		$table = AdresseImportService::TABLE_NAME;
+		$table = $this->tableName;
 		$sql = <<<EOT
 		SELECT *
 		FROM $table
@@ -134,7 +135,7 @@ class AdresseSokService {
 
 
 	public function getLastDbUpdate() : ?DateTime {
-		$table = AdresseImportService::TABLE_NAME;
+		$table = $this->tableName;
 		$sql = "
 			SELECT timestamp_created
 			FROM $table

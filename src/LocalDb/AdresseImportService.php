@@ -6,182 +6,166 @@
 
 namespace Iaasen\Matrikkel\LocalDb;
 
-use Iaasen\DateTime;
 use Iaasen\Debug\Timer;
-use Laminas\Db\Adapter\Adapter;
 use SplFileObject;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use ZipArchive;
 
 class AdresseImportService {
-	// All of Norway
-	const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV.zip';
-	const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV';
 
-	// Trøndelag
-	//const ADDRESS_URL = 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV.zip';
-	//const EXTRACT_FOLDER = self::CACHE_FOLDER . '/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV';
+    const CACHE_FOLDER = 'data/cache';
+    const CSV_FILENAME = 'matrikkelenAdresseLeilighetsniva.csv';
+    const ZIP_FILE = self::CACHE_FOLDER.'/matrikkel-address-import.zip';
+    protected string $list;
 
-	// Same for all
-	const CACHE_FOLDER = 'data/cache';
-	const ZIP_FILE = self::CACHE_FOLDER . '/matrikkel-address-import.zip';
-	const CSV_FILE = self::EXTRACT_FOLDER . '/matrikkelenAdresse.csv';
-	const TABLE_NAME = 'matrikkel_addresses';
+    public static $settings = [
+        'norge' => [
+            'adresse_url' => 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV.zip',
+            'extract_folder' => self::CACHE_FOLDER. '/Basisdata_0000_Norge_25833_MatrikkelenAdresse_CSV',
+            'extract_filename' => 'matrikkelenAdresse.csv',
+            'row_count' => 2589100,
+        ],
+        'norge_leilighetsnivaa' => [
+            'adresse_url' => 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresseLeilighetsniva/CSV/Basisdata_0000_Norge_25833_MatrikkelenAdresseLeilighetsniva_CSV.zip',
+            'extract_folder' => self::CACHE_FOLDER. '/Basisdata_0000_Norge_25833_MatrikkelenAdresseLeilighetsniva_CSV',
+            'extract_filename' => 'matrikkelenAdresseLeilighetsniva.csv',
+            'row_count' => 3580100,
+        ],
+        'trondelag' => [
+            'adresse_url' => 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresse/CSV/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV.zip',
+            'extract_folder' => self::CACHE_FOLDER. '/Basisdata_50_Trondelag_25833_MatrikkelenAdresse_CSV',
+            'extract_filename' => 'matrikkelenAdresse.csv',
+            'row_count' => 248900,
+        ],
+        'trondelag_leilighetsnivaa' => [
+            'adresse_url' => 'https://nedlasting.geonorge.no/geonorge/Basisdata/MatrikkelenAdresseLeilighetsniva/CSV/Basisdata_50_Trondelag_25833_MatrikkelenAdresseLeilighetsniva_CSV.zip',
+            'extract_folder' => self::CACHE_FOLDER . '/Basisdata_50_Trondelag_25833_MatrikkelenAdresseLeilighetsniva_CSV',
+            'extract_filename' => 'matrikkelenAdresseLeilighetsniva.csv',
+            'row_count' => 340900,
+        ],
+    ];
 
-	// Temp storage
-	protected array $addressRows = [];
+    public function __construct(
+        protected AdresseTable $adresseTable,
+        protected BruksenhetTable $bruksenhetTable,
+    ) {}
 
-
-	public function __construct(
-		protected Adapter $dbAdapter
-	) {}
-
-
-	public function importAddresses(SymfonyStyle $io) : bool {
+    public function importAddresses(SymfonyStyle $io, string $list) : bool
+    {
 		Timer::setStart();
+        $this->list = $list;
 
-		$success = $this->downloadFile();
+        $io->write('Download the import file... ');
+		$success = $this->downloadFile($list);
 		if(!$success) {
-			$io->writeln('Failed to download file from: ' . self::ADDRESS_URL);
+			$io->writeln('Failed to download file from ' . self::$settings[$list]['adresse_url']);
 			return false;
 		}
+        $io->writeln('<info>Success</info>');
 
-		$io->write('Extract the CSV file from the ZIP file: ');
-		$fileObject = $this->openImportFile();
-		$io->writeln('Success');
+		$io->write('Extract the CSV file from the ZIP file... ');
+        $success = $this->extractFile();
+        if(!$success) {
+            $io->writeln('Failed to extract the zip-file: '.self::ZIP_FILE);
+            return false;
+        }
 
-		// This command will rewind the file to first row.
-		// The next fgetcsv-call will fetch the second line and skip the column names.
-		$fileLineCount = $this->countFileLines($fileObject);
-		$io->writeln('The file has ' . $fileLineCount . ' lines');
+		$fileObject = $this->openImportFile($list);
+		$io->writeln('<info>Success</info>');
+
+        // It takes very long time to count the number of lines in the file. Hardcoding an estimate instead
+		//$fileLineCount = $this->countFileLines($fileObject);
+        $fileLineCount = self::$settings[$list]['row_count'];
+
+		$io->writeln('The file has about ' . $fileLineCount . ' lines');
 
 		$io->writeln('Import addresses');
 		$progressBar = $io->createProgressBar($fileLineCount);
 
+        // Skip header row
+        $fileObject->next();
+
 		$count = 0;
-		while($row = $fileObject->fgetcsv(separator: ';')) {
-			if($row[3] == 'vegadresse') $this->insertRow($row);
-			if(count($this->addressRows) >= 100) {
-				$count += 100;
-				$this->flush();
-				$progressBar->advance(100);
-			}
+		while($row = $fileObject->fgetcsv()) {
+			if($row[2] == 'vegadresse') {
+                if(str_contains($list, 'leilighetsnivaa')) {
+                    $this->adresseTable->insertRowLeilighetsnivaa($row);
+                    $this->bruksenhetTable->insertRow($row);
+                }
+                else {
+                    $this->adresseTable->insertRow($row);
+                }
+            }
+            $count++;
+            if($count % 100 === 0) {
+                $progressBar->setProgress($count);
+            }
 		}
 
-		$count += count($this->addressRows);
-		$this->flush();
-		$progressBar->finish();
-		$this->closeFile($fileObject);
+        $progressBar->finish();
+        $this->closeFile($fileObject);
+        $this->deleteImportFiles($list);
+        $io->writeln('');
 
-		$oldRows = $this->deleteOldRows();
+        $this->adresseTable->flush();
+        $this->bruksenhetTable->flush();
+
+		$oldRows = $this->adresseTable->deleteOldRows();
 		$io->writeln('');
-		$io->writeln('Deleted ' . $oldRows . ' old rows');
+		$io->writeln('Deleted ' . $oldRows . ' old address rows');
 
-		$io->writeln($count . ' road addresses imported');
-		$io->writeln('The address table now contains ' . $this->countDbAddressRows() . ' addresses');
+        if(str_contains($list, 'leilighetsnivaa')) {
+            $oldRows = $this->bruksenhetTable->deleteOldRows();
+            $io->writeln('Deleted ' . $oldRows . ' old bruksenhet rows');
+        }
+        else {
+            $io->writeln('Truncated the bruksenhet table');
+            $this->bruksenhetTable->truncateTable();
+        }
+
+        $io->writeln('');
+		$io->writeln($count . ' street address rows imported');
+		$io->writeln('The address table now contains ' . $this->adresseTable->countDbAddressRows() . ' addresses');
 		$io->info('Completed in ' . round(Timer::getElapsed(), 3) . ' seconds');
 		return true;
 	}
 
-
-	protected function downloadFile() : bool {
-		$success = copy(self::ADDRESS_URL, self::ZIP_FILE);
-		if(!$success) return false;
-
-		$zip = new ZipArchive();
-		$zip->open(self::ZIP_FILE);
-		$success = $zip->extractTo(self::CACHE_FOLDER);
-		$zip->close();
-		return $success;
+	protected function downloadFile(string $list) : bool
+    {
+		return copy(self::$settings[$list]['adresse_url'], self::ZIP_FILE);
 	}
 
+    protected function extractFile(): bool
+    {
+        $zip = new ZipArchive();
+        $zip->open(self::ZIP_FILE);
+        $success = $zip->extractTo(self::CACHE_FOLDER);
+        $zip->close();
+        return $success;
+    }
 
-	protected function openImportFile() : SplFileObject {
-		$fileObject = new SplFileObject(self::CSV_FILE, 'r');
-		$fileObject->setFlags(SplFileObject::READ_AHEAD | SplFileObject::SKIP_EMPTY);
+	protected function openImportFile(string $list) : SplFileObject
+    {
+		$fileObject = new SplFileObject(self::$settings[$list]['extract_folder'].'/'.self::$settings[$list]['extract_filename'], 'r');
+		$fileObject->setFlags(SplFileObject::READ_AHEAD | SplFileObject::SKIP_EMPTY | SplFileObject::READ_CSV);
+        $fileObject->setCsvControl(';');
 		return $fileObject;
 	}
 
-
-	protected function closeFile(SplFileObject &$fileObject) : void {
+	protected function closeFile(SplFileObject &$fileObject) : void
+    {
 		$fileObject = null;
 	}
 
-
-	protected function deleteImportFile() : void {
-		unlink(self::CSV_FILE);
+	protected function deleteImportFiles(string $list) : void
+    {
+		unlink(self::$settings[$list]['extract_folder'].'/'.self::$settings[$list]['extract_filename']);
+        rmdir(self::$settings[$list]['extract_folder']);
+        unlink(self::ZIP_FILE);
 	}
 
-
-	public function insertRow(array $row) : void {
-		// Fields from the matrikkel-sok that doesn't exist in this csv import:
-	 	// tittel, fylkesnavn, kilde
-
-		$this->addressRows[] = [
-			'adresseId' => (int) $row[32],
-			'kommunenummer' => (int) $row[1],
-			'kommunenavn' => $row[2],
-			'adressetype' => $row[3],
-			'adressekode' => $row[6],
-			'adressenavn' => $row[7],
-			'nummer' => (int) $row[8],
-			'bokstav' => $row[9],
-			'gardsnummer' => (int) $row[10],
-			'bruksnummer' => (int) $row[11],
-			'festenummer' => (int) $row[12],
-			'undernummer' => (int) $row[13],
-			'adresseTekst' => $row[14],
-			'epsg' => (int) $row[16],
-			'nord' => (float) $row[17],
-			'øst' => (float) $row[18],
-			'postnummer' => (int) $row[19],
-			'poststed' => $row[20],
-			'grunnkretsnavn' => $row[22],
-			'soknenavn' => $row[24],
-			'tettstednavn' => $row[27],
-			'fylkesnummer' => floor((int) $row[1] / 100),
-			'search_context' => $row[7] . ' ' . $row[8] . $row[9] . ' ' . $row[20] . ' ' . $row[27] . ' ' . $row[2],
-		];
-	}
-
-
-	public function flush() : void {
-		if(!count($this->addressRows)) return;
-
-		$sql = $this->getStartInsert();
-		$valueRows = [];
-		foreach($this->addressRows as $addressRow) {
-			foreach($addressRow AS $key => $column) {
-				$addressRow[$key] = '"' . $column . '"';
-			}
-			$valueRows[] .= '(' . implode(',', $addressRow) . ')';
-		}
-		$sql .= implode(",\n", $valueRows);
-		$sql .= ';';
-		$this->dbAdapter->query($sql)->execute();
-		$this->addressRows = [];
-	}
-
-
-	public function getStartInsert() : string {
-		$columnNames = array_keys(current($this->addressRows));
-		$columnsString = array_map(function ($column) { return '`' . $column . '`'; }, $columnNames);
-		$columnsString = implode(',', $columnsString);
-		$columnsString = '(' . $columnsString . ')';
-		return 'REPLACE INTO ' . self::TABLE_NAME . ' ' . $columnsString . PHP_EOL . 'VALUES' . PHP_EOL;
-	}
-
-
-	public function deleteOldRows() : int {
-		$date = new DateTime();
-		$date->modify('-3 hour'); // Go back 3 hours to get before UTC in case of timezone errors
-		$sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE timestamp_created < "' . $date->formatMysql() . '";';
-		$result = $this->dbAdapter->query($sql)->execute();
-		return $result->getAffectedRows();
-	}
-
-
-	public function countFileLines(SplFileObject $fileObject) : int {
+	public function countFileLines(SplFileObject $fileObject) : int
+    {
 		$count = 0;
 		while(!$fileObject->eof()) {
 			$count++;
@@ -189,13 +173,6 @@ class AdresseImportService {
 		}
 		$fileObject->rewind();
 		return $count;
-	}
-
-
-	public function countDbAddressRows() : int {
-		$sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ';';
-		$result = $this->dbAdapter->query($sql)->execute();
-		return current($result->current());
 	}
 
 }

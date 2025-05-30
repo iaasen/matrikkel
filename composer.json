@@ -11,6 +11,7 @@
         "php": "^8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-soap": "*",
         "ext-zip": "*",
         "iaasen/stdlib": "dev-master",
         "nyholm/psr7": "^1.8",

@@ -75,44 +75,6 @@ class AdresseService extends AbstractService {
 		return $addresses;
 	}
 
-
-	/**
-	 * @deprecated Use createAddress()
-	 * @param Adresse[] $addresses
-	 * @return Adresse[]
-	 */
-	protected function populateMatrikkelenhet(array $addresses) : array {
-		$matrikkelIdIndex = ObjectKeyMatrix::getObjectKeyMatrix($addresses, 'matrikkelenhetId');
-		$result = $this->storeClient->getObjects(['ids' => BubbleId::getIds(array_keys($matrikkelIdIndex), 'MatrikkelenhetId')]);
-		if(is_object($result->return->item)) $result->return->item = [$result->return->item];
-		$matrikkelObjects = [];
-		foreach($result->return->item AS $item) {
-			$matrikkelObjects[] = new Matrikkelenhet($item);
-		}
-		$matrikkelObjects = $this->populateKommune($matrikkelObjects);
-		ObjectKeyMatrix::populateObjectKeyMatrixWithAttribute($matrikkelIdIndex, 'matrikkelenhet', $matrikkelObjects, 'id');
-		return $addresses;
-	}
-
-
-	/**
-	 * @deprecated Use createAddress()
-	 * @param Adresse[] $addresses
-	 * @return Adresse[]
-	 */
-	protected function populatePostnummeromrade(array $addresses) : array {
-		foreach($addresses AS $address) {
-			$address->postnummeromrade = null;
-			$result = $this->adresseClient->findObjekterForAdresse(['adresseId' => BubbleId::getId($address->id, 'AdresseId')]);
-			foreach($result->return->bubbleObjects->item AS $item) {
-				if(isset($item->kretstypeKodeId) && $item->kretstypeKodeId->value == 4097)
-					$address->postnummeromrade = new Krets\Postnummeromrade($item);
-			}
-		}
-		return $addresses;
-	}
-
-
 	protected function createAddress(int $addressId) : ?Adresse {
 		$address = null;
 
